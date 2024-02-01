@@ -1,5 +1,7 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:smartflask/main.dart';
+import 'package:smartflask/components/pie_chart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,25 +18,49 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context)
   {
     return MaterialApp(
+     theme: ThemeData(fontFamily: 'OpenSans'),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Smart Flask'),
+          title: const Text('Smart Flask',
+          style: TextStyle(fontFamily: 'Raleway')),
+
           backgroundColor: Colors.blue,
         ),
-        body: Container(
-          child: const Text('ml drank'),
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(10),
-          
-          decoration: BoxDecoration(
-            border: Border.all(
-                color: Colors.black,
-                width: 3,
+        body: Stack(
+          children: [
+            Container(
+
+              child: const Text('ml drank'),
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
+
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 3,
+                  ),
+                  borderRadius: BorderRadius.all((Radius.circular(20)))
+              ),
+
             ),
-            borderRadius: BorderRadius.all((Radius.circular(20)))
-          ),
-          
+            Container(
+              child: PieChart(
+                  PieChartData(sections: [
+                    PieChartSectionData(
+                      value: 10,
+                      color: Colors.blue,
+                    ),
+                    PieChartSectionData(
+                      value: 20,
+                      color: Colors.grey
+                    )
+                  ])
+              )
+            )
+          ],
         ),
+
+
         bottomNavigationBar: NavigationBar(
           destinations: const [
           NavigationDestination(

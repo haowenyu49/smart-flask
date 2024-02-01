@@ -35,6 +35,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  fl_chart: ^0.63.0
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +58,27 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: custom_fonts/fonts/Raleway-Regular.ttf
+        - asset: custom_fonts/fonts/Raleway-Italic.ttf
+          style: italic
+        - asset: custom_fonts/fonts/Raleway-SemiBold.ttf
+        - asset: custom_fonts/fonts/Raleway-Bold.ttf
+          weight: 700
+        - asset: custom_fonts/fonts/Raleway-Light.ttf
+    - family: OpenSans
+      fonts:
+        - asset: custom_fonts/fonts/OpenSans_Condensed-Regular.ttf
+        - asset: custom_fonts/fonts/OpenSans_Condensed-Bold.ttf
+          weight: 700
+        - asset: custom_fonts/fonts/OpenSans_Condensed-Italic.ttf
+          style: italic
+        - asset: custom_fonts/fonts/OpenSans_Condensed-SemiBold.ttf
+          weight: 600
+
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
