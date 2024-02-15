@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:smartflask/components/ArcProgressIndicator.dart';
 import 'package:smartflask/main.dart';
 import 'package:smartflask/components/pie_chart.dart';
 
@@ -14,6 +15,7 @@ class MyApp extends StatefulWidget {
 }
 class _MyAppState extends State<MyApp> {
   int selectedPageIndex = 0;
+  double progress = 0.152;
   @override
   Widget build(BuildContext context)
   {
@@ -26,38 +28,50 @@ class _MyAppState extends State<MyApp> {
 
           backgroundColor: Colors.blue,
         ),
-        body: Stack(
-          children: [
-            Container(
+        body: Center(
 
-              child: const Text('ml drank'),
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(10),
-
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 3,
-                  ),
-                  borderRadius: BorderRadius.all((Radius.circular(20)))
-              ),
-
-            ),
-            Container(
-              child: PieChart(
-                  PieChartData(sections: [
-                    PieChartSectionData(
-                      value: 10,
-                      color: Colors.blue,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Card(
+                  margin: EdgeInsets.all(10),
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget> [
+                        Positioned(
+                            bottom: 8,
+                            child: ArcProgressIndicator(
+                              progress: progress,
+                              strokeWidth: 8.0,
+                              child: Icon(Icons.water_drop_outlined,
+                                color: Colors.blue,
+                                size:75,
+                            ),
                     ),
-                    PieChartSectionData(
-                      value: 20,
-                      color: Colors.grey
+                        ),
+                        Positioned(
+                          bottom: 2,
+                          child: Text(
+                          '764/500 ml drank',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        ),
+                        TextButton(onPressed: () {}, child: Row (
+                          mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget> [
+                            Text('Refresh'),
+                            Icon(Icons.refresh),
+                            ]
+                          )
+                        ),
+                        SizedBox(height: 20),
+                      ]
                     )
-                  ])
-              )
-            )
-          ],
+                  )
+                )
+              ],
+        ),
         ),
 
 
