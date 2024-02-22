@@ -44,20 +44,21 @@ class _MyAppState extends State<MyApp> {
                             child: ArcProgressIndicator(
                               progress: progress,
                               strokeWidth: 8.0,
-                              child: Icon(Icons.water_drop_outlined,
+                              child: const Icon(Icons.water_drop_outlined,
                                 color: Colors.blue,
                                 size:75,
                             ),
                     ),
                         ),
-                        Positioned(
+                        const Positioned(
                           bottom: 2,
                           child: Text(
                           '764/500 ml drank',
                           style: TextStyle(fontSize: 24),
                         ),
                         ),
-                        TextButton(onPressed: () {}, child: Row (
+                        TextButton(onPressed: () {},
+                            child: const Row (
                           mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget> [
                             Text('Refresh'),
@@ -69,9 +70,58 @@ class _MyAppState extends State<MyApp> {
                       ]
                     )
                   )
-                )
-              ],
-        ),
+                ),
+                Card(
+                    margin: EdgeInsets.all(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+
+                    child: TextButton(onPressed: () {},
+                      child: const Row (
+                        mainAxisAlignment: MainAxisAlignment.center,
+
+                        children: <Widget> [
+                          Text('Amount of water this week',
+                          style: TextStyle(fontSize: 28,color:Colors.blue),),
+                          Icon(Icons.arrow_forward, color: Colors.blue,),
+                        ],
+                    ),
+                    ),
+                    ),
+                ),
+                Card (
+                  margin: EdgeInsets.all(10),
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+
+                    child: TextButton(onPressed: () {}, child: const Row (
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget> [
+                          Icon(Icons.insert_chart, color: Colors.blue),
+                          Text('See my insights',
+                              style: TextStyle(fontSize: 28,color:Colors.blue)),
+                        ]
+                    ),
+                      ),
+                    ),
+                ),
+                Card (
+                    margin: EdgeInsets.all(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+
+                    child: TextButton(onPressed: () {}, child: const Row (
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget> [
+                          Text('Set Reminder',
+                              style: TextStyle(fontSize: 20,color:Colors.blue)),
+                        ]
+                    )
+                    ),
+                    )
+                ),
+            ]
+          ),
         ),
 
 
