@@ -20,141 +20,40 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context)
   {
     return MaterialApp(
-     theme: ThemeData(fontFamily: 'OpenSans'),
+      theme: ThemeData(fontFamily: 'OpenSans'),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Smart Flask',
-          style: TextStyle(fontFamily: 'Raleway')),
+          appBar: AppBar(
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            backgroundColor: const Color.fromRGBO(253, 237, 201, 1.0),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
+              ),
+            ),
+            toolbarHeight: 150,
+            flexibleSpace: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                    child: Container(
+                      height: 85,
+                      width: 110,
+                      decoration: const BoxDecoration(
 
-          backgroundColor: Colors.blue,
-        ),
-        body: Center(
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Card(
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      children: <Widget> [
-                        Positioned(
-                            bottom: 8,
-                            child: ArcProgressIndicator(
-                              progress: progress,
-                              strokeWidth: 8.0,
-                              child: const Icon(Icons.water_drop_outlined,
-                                color: Colors.blue,
-                                size:75,
-                            ),
-                    ),
-                        ),
-                        const Positioned(
-                          bottom: 2,
-                          child: Text(
-                          '764/500 ml drank',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        ),
-                        TextButton(onPressed: () {},
-                            child: const Row (
-                          mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget> [
-                            Text('Refresh'),
-                            Icon(Icons.refresh),
-                            ]
-                          )
-                        ),
-                        SizedBox(height: 20),
-                      ]
-                    )
-                  )
-                ),
-                Card(
-                    margin: EdgeInsets.all(10),
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-
-                    child: TextButton(onPressed: () {},
-                      child: const Row (
-                        mainAxisAlignment: MainAxisAlignment.center,
-
-                        children: <Widget> [
-                          Text('Amount of water this week',
-                          style: TextStyle(fontSize: 28,color:Colors.blue),),
-                          Icon(Icons.arrow_forward, color: Colors.blue,),
-                        ],
-                    ),
-                    ),
-                    ),
-                ),
-                Card (
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-
-                    child: TextButton(onPressed: () {}, child: const Row (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget> [
-                          Icon(Icons.insert_chart, color: Colors.blue),
-                          Text('See my insights',
-                              style: TextStyle(fontSize: 28,color:Colors.blue)),
-                        ]
-                    ),
                       ),
-                    ),
-                ),
-                Card (
-                    margin: EdgeInsets.all(10),
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-
-                    child: TextButton(onPressed: () {}, child: const Row (
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget> [
-                          Text('Set Reminder',
-                              style: TextStyle(fontSize: 20,color:Colors.blue)),
-                        ]
                     )
-                    ),
-                    )
-                ),
-            ]
+                )
+              ],
+            ),
           ),
-        ),
+          body: ListView(
 
-
-        bottomNavigationBar: NavigationBar(
-          destinations: const [
-          NavigationDestination(
-                icon: Icon(Icons.home),
-                label: 'Home'),
-           NavigationDestination(
-                icon: Icon(Icons.explore),
-                label: 'Explore'),
-           NavigationDestination(
-               icon: Icon(Icons.bar_chart),
-               label: 'Insights'),
-            NavigationDestination(
-                icon: Icon(Icons.account_circle),
-                label: 'Profile')
-          ],
-          backgroundColor: Color.fromRGBO(224, 224, 224, 1),
-
-          shadowColor: Colors.black,
-          selectedIndex: selectedPageIndex,
-          onDestinationSelected: (int index) {
-            setState(() {
-              selectedPageIndex = index;
-            });
-          },
-          animationDuration: Duration(milliseconds: 1000),
-        ),
-
-      ),
+          )
+      )
     );
   }
 
 }
-

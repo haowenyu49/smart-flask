@@ -11,7 +11,6 @@ class ArcProgressIndicator extends StatelessWidget {
   final double height;
   final Widget child;
 
-
   const ArcProgressIndicator({
     Key? key,
     required this.progress,
@@ -38,7 +37,7 @@ class ArcProgressIndicator extends StatelessWidget {
         child: Container(
           width: width,
           height: height,
-          child: Center(child:child)
+          child: Center(child: child)
         )
       ),
     );
