@@ -23,10 +23,10 @@ Widget build(BuildContext context) {
             color : Color.fromRGBO(246, 246, 246, 1),
           ),
           child: Stack(
+              alignment: Alignment.center,
               children: <Widget>[
-                Positioned(
-                    top: 150,
-                    left: 64,
+                const Positioned(
+                    top: 194,
                     child: Text('SmartFlask.', textAlign: TextAlign.center, style: TextStyle(
                         color: Color.fromRGBO(0, 0, 0, 1),
                         fontFamily: 'Open Sans Hebrew',
@@ -36,6 +36,7 @@ Widget build(BuildContext context) {
                         height: 1
                     ),)
                 ),Positioned(
+
                     top: 257,
                     left: 79,
                     child: Text('Welcome back.', textAlign: TextAlign.center, style: TextStyle(
