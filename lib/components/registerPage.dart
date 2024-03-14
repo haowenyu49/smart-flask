@@ -72,21 +72,52 @@ class RegisterPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     _buildSocialButton(
-                      assetName: 'assets/icons/apple.svg', // Replace with your asset path
+                      assetName: 'assets/icons/apple.svg', 
                       onTap: () {
                         // Handle Apple sign in
                       },
                     ),
                     SizedBox(width: 16), // Space between buttons
                     _buildSocialButton(
-                      assetName: 'assets/icons/google.svg', // Replace with your asset path
+                      assetName: 'assets/icons/google.svg', 
                       onTap: () {
                         // Handle Google sign in
                       },
                     ),
                   ],
                 ),
-                SizedBox(height: 48), // Space at the bottom
+                SizedBox(height: 48),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(width: 1, color: Colors.black)
+                      ),
+                      child: Image.network(
+                        'https://pngimg.com/uploads/apple_logo/apple_logo_PNG19668.png',
+                    ),
+                    ),
+                    SizedBox(width: 50),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(width: 1, color: Colors.black)
+
+                      ),
+                      child: Image.network(
+                        'http://pngimg.com/uploads/google/google_PNG19635.png',
+                      ),
+                    )
+                  ],
+                ),
+                // Space at the bottom
               ],
             ),
           ),
