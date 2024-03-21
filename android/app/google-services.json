@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:493114577117:android:44b61800f96a43ad210b34",
+        "android_client_info": {
+          "package_name": "com.example.smartflask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493114577117-ta0sd4k8tqjmn89gj53a06i1ig3paq4l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvoiwVyepQd2M21fCZoU7ZwF0B5qkm3WI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493114577117-ta0sd4k8tqjmn89gj53a06i1ig3paq4l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:493114577117:android:48921352887fcae9210b34",
         "android_client_info": {
           "package_name": "com.project.smartflask"

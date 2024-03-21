@@ -145,6 +145,9 @@ class BottomSheetClass extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
+                        Row(
+
+                        ),
                         const Text('Hello World!'),
                         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close'))
                       ],
@@ -154,6 +157,7 @@ class BottomSheetClass extends StatelessWidget {
                 });
           },
   child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[const Text('Amount of water this week',
   style: TextStyle(fontSize: 28, color:Colors.blue),),
         Icon(Icons.arrow_forward, color: Colors.blue,),
