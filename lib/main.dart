@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:smartflask/components/ArcProgressIndicator.dart';
+import 'package:smartflask/components/homepage.dart';
 import 'package:smartflask/components/loginPage.dart';
 import 'package:smartflask/components/registerPage.dart';
 import 'package:smartflask/main.dart';
@@ -23,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'OpenSans'),
-      home: RegisterPage()
+      home: HomePage()
     );
   }
 
