@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context)
   {
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'OpenSans'),
+      theme: ThemeData(useMaterial3: true, fontFamily: 'OpenSans'),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Smart Flask',
@@ -98,6 +98,9 @@ class _HomePageState extends State<HomePage> {
 
 
         bottomNavigationBar: NavigationBar(
+          backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+          overlayColor: MaterialStateProperty.all(Colors.grey) ,
+          indicatorColor: Colors.grey,
           destinations: const [
             NavigationDestination(
                 icon: Icon(Icons.home),
@@ -112,9 +115,7 @@ class _HomePageState extends State<HomePage> {
                 icon: Icon(Icons.account_circle),
                 label: 'Profile')
           ],
-          backgroundColor: Color.fromRGBO(224, 224, 224, 1),
 
-          shadowColor: Colors.black,
           selectedIndex: selectedPageIndex,
           onDestinationSelected: (int index) {
             setState(() {
