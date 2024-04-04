@@ -14,116 +14,77 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedPageIndex = 0;
   double progress = 0.152;
+
   @override
   Widget build(BuildContext context)
   {
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'OpenSans'),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Smart Flask',
-              style: TextStyle(fontFamily: 'Raleway')),
+    return Center(
 
-          backgroundColor: Colors.blue,
-        ),
-        body: Center(
-
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Card(
-                    margin: EdgeInsets.all(10),
-                    child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                            children: <Widget> [
-                              Positioned(
-                                bottom: 8,
-                                child: ArcProgressIndicator(
-                                  progress: progress,
-                                  strokeWidth: 8.0,
-                                  child: const Icon(Icons.water_drop_outlined,
-                                    color: Colors.blue,
-                                    size:75,
-                                  ),
-                                ),
-                              ),
-                              const Positioned(
-                                bottom: 2,
-                                child: Text(
-                                  '764/500 ml drank',
-                                  style: TextStyle(fontSize: 24),
-                                ),
-                              ),
-                              TextButton(onPressed: () {},
-                                  child: const Row (
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget> [
-                                        Text('Refresh'),
-                                        Icon(Icons.refresh),
-                                      ]
-                                  )
-                              ),
-                              SizedBox(height: 20),
-                            ]
-                        )
-                    )
-                ),
-                Card(
-                  margin: EdgeInsets.all(10),
-                  child: Padding(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Card(
+                margin: EdgeInsets.all(10),
+                child: Padding(
                     padding: EdgeInsets.all(20),
-                    child: BottomSheetClass(),
-                    ),
-                  ),
-
-                Card (
-                    margin: EdgeInsets.all(10),
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-
-                      child: TextButton(onPressed: () {}, child: const Row (
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget> [
-                            Text('Set Reminder',
-                                style: TextStyle(fontSize: 20,color:Colors.blue)),
-                          ]
-                      )
-                      ),
+                    child: Column(
+                        children: <Widget> [
+                          Positioned(
+                            bottom: 8,
+                            child: ArcProgressIndicator(
+                              progress: progress,
+                              strokeWidth: 8.0,
+                              child: const Icon(Icons.water_drop_outlined,
+                                color: Colors.blue,
+                                size:75,
+                              ),
+                            ),
+                          ),
+                          const Positioned(
+                            bottom: 2,
+                            child: Text(
+                              '764/500 ml drank',
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ),
+                          TextButton(onPressed: () {},
+                              child: const Row (
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget> [
+                                    Text('Refresh'),
+                                    Icon(Icons.refresh),
+                                  ]
+                              )
+                          ),
+                          SizedBox(height: 20),
+                        ]
                     )
-                ),
-              ]
-          ),
-        ),
+                )
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: BottomSheetClass(),
+              ),
+            ),
 
+            Card (
+                margin: EdgeInsets.all(10),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
 
-        bottomNavigationBar: NavigationBar(
-          destinations: const [
-            NavigationDestination(
-                icon: Icon(Icons.home),
-                label: 'Home'),
-            NavigationDestination(
-                icon: Icon(Icons.explore),
-                label: 'Explore'),
-            NavigationDestination(
-                icon: Icon(Icons.bar_chart),
-                label: 'Insights'),
-            NavigationDestination(
-                icon: Icon(Icons.account_circle),
-                label: 'Profile')
-          ],
-          backgroundColor: Color.fromRGBO(224, 224, 224, 1),
-
-          shadowColor: Colors.black,
-          selectedIndex: selectedPageIndex,
-          onDestinationSelected: (int index) {
-            setState(() {
-              selectedPageIndex = index;
-            });
-          },
-          animationDuration: Duration(milliseconds: 1000),
-        ),
-
+                  child: TextButton(onPressed: () {}, child: const Row (
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget> [
+                        Text('Set Reminder',
+                            style: TextStyle(fontSize: 20,color:Colors.blue)),
+                      ]
+                  )
+                  ),
+                )
+            ),
+          ]
       ),
     );
   }
@@ -236,33 +197,33 @@ class BottomSheetClass extends StatelessWidget {
                               ),
 
                               SizedBox(height: 10),
-                          Expanded(
-                            child: FutureBuilder<List<Map<String, dynamic>>>(
-                              future: fetchLast7DaysData(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator();
-                                }
-                                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                  return Text('No data available');
-                                }
-                                final data = snapshot.data!;
-                                // Your logic here to display the fetched data
-                                // For simplicity, this example just lists the amounts
-                                return ListView.builder(
-                                  itemCount: data.length,
-                                  itemBuilder: (context, index) {
-                                    final dayData = data[index];
-                                    return ListTile(
-                                      title: Text(DateFormat('MM/dd').format(dayData['date'])),
-                                      subtitle: Text('${dayData['amount']} ml'),
+                              Expanded(
+                                child: FutureBuilder<List<Map<String, dynamic>>>(
+                                  future: fetchLast7DaysData(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    }
+                                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                      return Text('No data available');
+                                    }
+                                    final data = snapshot.data!;
+                                    // Your logic here to display the fetched data
+                                    // For simplicity, this example just lists the amounts
+                                    return ListView.builder(
+                                      itemCount: data.length,
+                                      itemBuilder: (context, index) {
+                                        final dayData = data[index];
+                                        return ListTile(
+                                          title: Text(DateFormat('MM/dd').format(dayData['date'])),
+                                          subtitle: Text('${dayData['amount']} ml'),
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
-                            ),
-                          ),
-                        ]));
+                                ),
+                              ),
+                            ]));
                   });
             },
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
