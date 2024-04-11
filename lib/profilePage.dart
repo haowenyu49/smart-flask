@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:smartflask/components/card.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -11,13 +12,13 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Card(
+              const Card(
 
                 margin: EdgeInsets.all(15),
                 child: Padding(
@@ -50,8 +51,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text('Goals', style: TextStyle(fontSize: 30),),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Card()
+                        CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} ),
+                        CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} ),
+                        CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} )
                       ],
                     )
                   ],
