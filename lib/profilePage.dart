@@ -50,14 +50,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Goals', style: TextStyle(fontSize: 30),),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} ),
-                        CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} ),
-                        CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} )
-                      ],
+                    Container(
+                      height: 140,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} ),
+                          CustomCard(icon: Icons.ac_unit, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} ),
+                          CustomCard(icon: Icons.water_drop_outlined, title: 'Water Consumption', subTitle: '3 Goals', onPressed: () {} )
+                        ],
+                      ),
                     )
                   ],
                 ),
