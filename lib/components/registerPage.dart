@@ -48,8 +48,7 @@ class RegisterPage extends StatelessWidget {
                     // Handle register action
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue, // Button color
-                    onPrimary: Colors.white, // Text color
+                    backgroundColor: Colors.blue, // Button color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
