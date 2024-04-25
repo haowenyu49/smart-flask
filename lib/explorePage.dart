@@ -9,8 +9,22 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: const Text('Explore Page'),
+    return Scaffold(
+      body: Center (
+        child: Container(
+          height: 600,
+          child: Card(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 200,
+                      )
+                    ]
+                  )
+                ),
+            )
+          ),
     );
   }
 }
