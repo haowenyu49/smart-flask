@@ -25,7 +25,7 @@ class _ExplorePageState extends State<ExplorePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: EdgeInsets.all(25),
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: items.length,
