@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
+import 'package:smartflask/components/homepage.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -166,7 +167,10 @@ class _RegisterFormState extends State<RegisterForm> {
                       _isLoading = false;
                     });
                     if (result == null) {
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePage()),
+                  (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(result)));
@@ -202,7 +206,10 @@ class _RegisterFormState extends State<RegisterForm> {
                       _isLoading = false;
                     });
                     if (result == null) {
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePage()),
+                              (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(result)));
@@ -221,7 +228,10 @@ class _RegisterFormState extends State<RegisterForm> {
                       _isLoading = false;
                     });
                     if (result == null) {
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePage()),
+                              (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(result)));
