@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartflask/Dashboard.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
 import 'package:smartflask/components/homepage.dart';
 import 'package:smartflask/components/registerPage.dart';
@@ -143,7 +144,7 @@ class _LoginFormState extends State<LoginForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
                               (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -156,7 +157,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
               },
               child: Text(
                 'Forgot Password?',
@@ -191,7 +192,7 @@ class _LoginFormState extends State<LoginForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
                               (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -213,7 +214,7 @@ class _LoginFormState extends State<LoginForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
                               (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

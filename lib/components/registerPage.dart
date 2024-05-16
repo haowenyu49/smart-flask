@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartflask/Dashboard.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
 import 'package:smartflask/components/homepage.dart';
 
@@ -169,7 +170,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
                   (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -208,7 +209,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
                               (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -230,7 +231,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const HomePage()),
+                          MaterialPageRoute(builder: (context) => const Dashboard()),
                               (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
