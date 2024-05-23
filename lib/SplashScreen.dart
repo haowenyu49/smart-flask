@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smartflask/Dashboard.dart';
+import 'package:smartflask/components/firebase/authentication.dart';
+import 'package:smartflask/components/homepage.dart';
 import 'package:smartflask/components/loginPage.dart';
 
 
@@ -18,12 +21,28 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> init() async {
-    await Future.delayed(const Duration(seconds: 2)).then((value) {
-      Navigator.pushReplacement(
-          context,
+    try{
+      await Future.delayed(Duration(seconds: 2));
+      bool isLoggedIn = await AuthenticationHelper().isLoggedIn();
+
+      if(isLoggedIn)
+        {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const Dashboard()));
+        }
+      else{
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => const LoginPage()));
+      }
+
+    }catch (e) {
+      print('Error during initialization $e');
+      Navigator.pushReplacement(context,
           MaterialPageRoute(
               builder: (BuildContext context) => const LoginPage()));
-    });
+    }
   }
 
   @override

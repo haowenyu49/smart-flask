@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:smartflask/components/ArcProgressIndicator.dart';
+import 'package:smartflask/components/firebase/authentication.dart';
 import 'package:smartflask/main.dart';
 import 'package:smartflask/components/pie_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -92,68 +93,64 @@ class _HomePageState extends State<HomePage> {
 }
 class DateDisplay extends StatelessWidget {
   final DateTime date;
+  final VoidCallback onTap;
 
-  DateDisplay({Key? key, required this.date}) : super(key: key);
+  DateDisplay({Key? key, required this.date, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String dayNumber = DateFormat('d').format(date); // Day number, e.g., "23"
     String dayName = DateFormat('E').format(date); // Day name abbreviation, e.g., "Mon"
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8), // Reduced padding
-      decoration: BoxDecoration(
-        color: Colors.blue[50], // Change to desired background color
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(
-            dayNumber,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16, // Reduced font size if necessary
-              color: Colors.blue, // Change to desired text color
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8), // Reduced padding
+        decoration: BoxDecoration(
+          color: Colors.blue[50], // Change to desired background color
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              dayNumber,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16, // Reduced font size if necessary
+                color: Colors.blue, // Change to desired text color
+              ),
             ),
-          ),
-          Text(
-            dayName,
-            style: TextStyle(
-              fontSize: 12, // Reduced font size if necessary
-              color: Colors.grey[600], // Change to desired text color
+            Text(
+              dayName,
+              style: TextStyle(
+                fontSize: 12, // Reduced font size if necessary
+                color: Colors.grey[600], // Change to desired text color
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class BottomSheetClass extends StatelessWidget {
+
+class BottomSheetClass extends StatefulWidget {
   const BottomSheetClass({super.key});
 
-  Future<List<Map<String, dynamic>>> fetchLast7DaysData() async {
-    final now = DateTime.now();
-    final sevenDaysAgo = now.subtract(Duration(days: 7));
-    final userUID = 'YOUR_USER_UID'; // Replace with actual user UID.
+  @override
+  _BottomSheetClassState createState() => _BottomSheetClassState();
 
-    // Convert to Unix timestamp for comparison.
-    final int sevenDaysAgoUnix = sevenDaysAgo.millisecondsSinceEpoch ~/ 1000;
+}
+class _BottomSheetClassState extends State<BottomSheetClass> {
 
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('water_consumption')
-        .where('userId', isEqualTo: userUID)
-        .where('timestamp', isGreaterThanOrEqualTo: sevenDaysAgoUnix)
-        .orderBy('timestamp', descending: true)
-        .get();
+  String selectedDay = DateFormat('EEEE').format(DateTime.now());
 
-    return querySnapshot.docs
-        .map((doc) => {
-      ...doc.data() as Map<String, dynamic>,
-      'date': DateTime.fromMillisecondsSinceEpoch(doc['timestamp'] * 1000)
-    })
-        .toList();
+  Future<Map<String, dynamic>> fetchLast7DaysData() async {
+    final userUID = AuthenticationHelper().uid; // Replace with actual user UID.
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userUID).get();
+    return userDoc.data()!['waterDrank'] ?? {};
   }
 
   @override
@@ -186,7 +183,14 @@ class BottomSheetClass extends StatelessWidget {
                                             final date = DateTime.now().subtract(Duration(days: index));
                                             return Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                              child: DateDisplay(date: date),
+                                              child: DateDisplay(
+                                                  date: date,
+                                                  onTap: () {
+                                                    setState(() {
+                                                      selectedDay = DateFormat('EEEE').format(date);
+                                                    });
+                                                  },
+                                              ),
                                             );
                                           }),
                                         ),
@@ -198,7 +202,7 @@ class BottomSheetClass extends StatelessWidget {
 
                               SizedBox(height: 10),
                               Expanded(
-                                child: FutureBuilder<List<Map<String, dynamic>>>(
+                                child: FutureBuilder<Map<String, dynamic>>(
                                   future: fetchLast7DaysData(),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.waiting) {
