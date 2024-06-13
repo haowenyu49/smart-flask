@@ -88,4 +88,24 @@ class AuthenticationHelper {
     await _auth.signOut();
     await _clearLoginState();
   }
+  Future<List<int>> getWaterLevel(String date) async {
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('water-drank')
+        .doc(date);
+
+    DocumentSnapshot doc = await docRef.get();
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      List<int> waterLevels = List<int>.from(data['drank']);
+      print('Water levels: $waterLevels'); // Debug print
+      return waterLevels;
+    } else {
+      print('No data found for date $date'); // Debug print
+      return [];
+    }
+  }
+
 }
+

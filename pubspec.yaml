@@ -73,7 +73,7 @@ flutter:
     - assets/icons/google-logo.png
     - assets/icons/apple-logo.png
     - assets/images/vegetarian.png
-    - assets/images/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTAzL3BmLWVkZ2FyY2FzdHJlam9uNC10aGFua3NnaXZpbmctYmFrZWQtYnV0dGVybnV0LTAyLWpvYjE3ODEucG5n.png
+    - assets/images/keto.png
   fonts:
     - family: Raleway
       fonts:

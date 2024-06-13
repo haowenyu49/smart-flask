@@ -14,7 +14,9 @@ class HomePage extends StatefulWidget {
 }
 class _HomePageState extends State<HomePage> {
   int selectedPageIndex = 0;
-  double progress = 0.152;
+  double progress = 0.0;
+  int drankToday = 0;
+  int dailyGoal = 2000;
 
   @override
   Widget build(BuildContext context)
@@ -41,14 +43,33 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                          const Positioned(
+                           Positioned(
                             bottom: 2,
                             child: Text(
-                              '764/500 ml drank',
+                              '$drankToday / $dailyGoal ml drank',
                               style: TextStyle(fontSize: 24),
                             ),
                           ),
-                          TextButton(onPressed: () {},
+                          TextButton(onPressed: () async {
+                            DateTime time = DateTime.now();
+                            String date = DateFormat('MM-dd-yyyy').format(time);
+                            List<int> waterLevels = await AuthenticationHelper().getWaterLevel(date);
+                            if (waterLevels.isNotEmpty) {
+                              int totalDrank = waterLevels.reduce((a, b) => a + b);
+                              double newProgress = totalDrank / dailyGoal;
+
+                              setState(() {
+                                drankToday = totalDrank;
+                                progress = newProgress;
+                              });
+                            } else {
+                              setState(() {
+                                drankToday = 0;
+                                progress = 0.0;
+                              });
+                            }
+
+                          },
                               child: const Row (
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget> [

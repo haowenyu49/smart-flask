@@ -21,7 +21,7 @@ class _ExplorePageState extends State<ExplorePage> {
     ExploreItem(imageURL: 'assets/images/bottles.png', title: 'Test', subtitle: "test 2")
   ];
   final List<ExploreItem>dietItems = [
-    ExploreItem(imageURL: 'assets/images/png-transparent-ketogenic-diet-weight-loss-low-fat-diet-health-leaf-vegetable-food-recipe-thumbnail.png', title: "Keto", subtitle: "Learn mre about some of the keto diets that can be helpful!"),
+    ExploreItem(imageURL: 'assets/images/keto.png', title: "Keto", subtitle: "Learn mre about some of the keto diets that can be helpful!"),
     ExploreItem(imageURL: 'assets/images/vegetarian.png', title: 'Test', subtitle: "test 2")
   ];
 
