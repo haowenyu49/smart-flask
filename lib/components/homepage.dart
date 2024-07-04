@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
 
                           },
                               child: const Row (
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget> [
                                     Text('Refresh'),
                                     Icon(Icons.refresh),
@@ -186,7 +186,7 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
                         height: 600,
                         color: Colors.white,
                         child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(height: 10),
@@ -222,7 +222,7 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
                               ),
 
                               SizedBox(height: 10),
-                              Expanded(
+                              Positioned(
                                 child: FutureBuilder<Map<String, dynamic>>(
                                   future: fetchLast7DaysData(),
                                   builder: (context, snapshot) {
