@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartflask/chatPage.dart';
 
 class ExploreItem {
   final String imageURL;
@@ -44,11 +45,16 @@ class _ExplorePageState extends State<ExplorePage> {
               itemBuilder: (BuildContext context, int index) {
                 ExploreItem item = itemsAI[index];
                 return Container(
-                  width: 250, // Taking the full width of the screen minus the margin
+                  width: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  // Taking the full width of the screen minus the margin
                   child: InkWell(
                     onTap: () {
                       // Handle the tap event
-                      print('Card tapped: ${item.title}');
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPage()));
+
                     },
                     child: Card(
                       clipBehavior: Clip.antiAlias, // This ensures that the image is clipped to the card's boundaries
