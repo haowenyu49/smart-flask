@@ -254,7 +254,7 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
               Text(
                 'Amount of water this week',
-                style: TextStyle(fontSize: 28, color: Colors.blue),
+                style: TextStyle(fontSize: 24, color: Colors.blue),
               ),
               Icon(Icons.arrow_forward, color: Colors.blue),
             ])));

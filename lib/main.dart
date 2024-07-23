@@ -21,7 +21,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Raleway',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme(
+            primary: Colors.blue,
+            secondary: Colors.blueAccent,
+            surface: Colors.white70,
+            background: Colors.white,
+            error: Colors.red,
+            onPrimary: Colors.black,
+            onSecondary: Colors.black,
+            onBackground: Colors.white,
+            onSurface: Colors.black,
+            onError: Colors.white,
+            brightness: Brightness.light
+        ),
         useMaterial3: true,
       ),
       home: const SplashScreen(),
