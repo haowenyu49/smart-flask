@@ -1,4 +1,6 @@
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -9,6 +11,9 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> messages = [];
   bool isTyping = false;
+  late OpenAI openAI;
+  late String assistantId;
+  late String threadId;
 
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -16,6 +21,12 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+    openAI = OpenAI.instance.build(
+      token: dotenv.env['OPENAI_API_KEY']!,
+      baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
+      enableLog: true,
+    );
+    assistantId = dotenv.env['WATER_ASSISTANT']!;
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -24,6 +35,12 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
       parent: _animationController,
       curve: Curves.easeOut,
     );
+    createThread();
+  }
+
+  void createThread() async {
+    final response = await openAI.threads.createThread(request: ThreadRequest());
+    threadId = response.id;  // Capture the thread ID for future use
   }
 
   void _sendMessage() {
@@ -45,30 +62,38 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
       isTyping = true;
     });
 
-    // Placeholder for getting response from ChatGPT
-    String chatGptResponse = await getChatGptResponse(message);
+    await sendMessageToThread(message);
+    String chatGptResponse = await getChatGptResponse();
     setState(() {
       messages.add({"text": chatGptResponse, "isUser": false, "isChatGpt": true});
       isTyping = false;
     });
 
-    // Placeholder for getting response from custom assistant
     String customAssistantResponse = await getCustomAssistantResponse(message);
     setState(() {
       messages.add({"text": customAssistantResponse, "isUser": false, "isChatGpt": false});
     });
   }
 
-  Future<String> getChatGptResponse(String message) async {
-    // Mock response for now
-    await Future.delayed(Duration(seconds: 2)); // Simulate a delay
-    return "ChatGPT response for: $message";
+  Future<void> sendMessageToThread(String message) async {
+    final request = CreateMessage(
+      role: 'user',
+      content: message,
+    );
+    await openAI.threads.messages.createMessage(
+      threadId: threadId,
+      request: request,
+    );
+  }
+
+  Future<String> getChatGptResponse() async {
+    final messages = await openAI.threads.messages.listMessage(threadId: threadId);
+    return messages.data.last.toString();  // Get the last message content
   }
 
   Future<String> getCustomAssistantResponse(String message) async {
-    // Mock response for now
-    await Future.delayed(Duration(seconds: 2)); // Simulate a delay
-    return "Custom assistant response for: $message";
+    final response = await openAI.assistant.retrieves(assistantId: assistantId);
+    return response.toString();  // Adjust according to actual response structure
   }
 
   @override
@@ -132,7 +157,6 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
                   icon: Icon(Icons.send),
                   onPressed: _sendMessage,
                 ),
-
               ],
             ),
           ),
@@ -147,10 +171,4 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
     _animationController.dispose();
     super.dispose();
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: ChatPage(),
-  ));
 }
