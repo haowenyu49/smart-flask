@@ -19,11 +19,11 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   final List<ExploreItem> itemsAI = [
     ExploreItem(imageURL: 'assets/images/droplet.png', title: "Water AI", subtitle: "Chat with AI to learn more about better habits to help keep you hydrated!"),
-    ExploreItem(imageURL: 'assets/images/bottles.png', title: 'Test', subtitle: "test 2")
+    ExploreItem(imageURL: 'assets/images/bottles.png', title: 'Explore Your Bottle', subtitle: "Learn more about the functionality of your bottle!")
   ];
   final List<ExploreItem>dietItems = [
     ExploreItem(imageURL: 'assets/images/keto.png', title: "Keto", subtitle: "Learn mre about some of the keto diets that can be helpful!"),
-    ExploreItem(imageURL: 'assets/images/vegetarian.png', title: 'Test', subtitle: "test 2")
+    ExploreItem(imageURL: 'assets/images/vegetarian.png', title: 'Vegetarian', subtitle: "See how vegetarian plans can be beneficial in your diet")
   ];
 
   @override

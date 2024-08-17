@@ -21,12 +21,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    openAI = OpenAI.instance.build(
-      token: dotenv.env['OPENAI_API_KEY']!,
-      baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
-      enableLog: true,
-    );
-    assistantId = dotenv.env['WATER_ASSISTANT']!;
+    _initializeOpenAI();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -35,66 +30,79 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
       parent: _animationController,
       curve: Curves.easeOut,
     );
-    createThread();
   }
 
-  void createThread() async {
-    final response = await openAI.threads.createThread(request: ThreadRequest());
-    threadId = response.id;  // Capture the thread ID for future use
+  Future<void> _initializeOpenAI() async {
+    openAI = OpenAI.instance.build(
+      token: dotenv.env['OPENAI_API_KEY']!,
+      baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
+      enableLog: true,
+    );
+    assistantId = dotenv.env['WATER_ASSISTANT']!;
+    threadId = await initiateThread();
   }
 
-  void _sendMessage() {
-    String message = _controller.text.trim();
-    if (message.isNotEmpty) {
-      setState(() {
-        messages.add({"text": message, "isUser": true});
-      });
-      _controller.clear();
-      _animationController.forward().then((_) {
-        _animationController.reverse();
-      });
-      _getResponse(message);
+  Future<String> initiateThread() async {
+    try {
+      ThreadResponse thr = await openAI.threads.v2.createThread(request: ThreadRequest());
+      return thr.id;
+    } catch (error) {
+      // Handle error (e.g., show a message to the user)
+      print("Failed to initiate thread: $error");
+      return '';
     }
   }
 
-  void _getResponse(String message) async {
+  void _sendMessage() async {
+    if (_controller.text.isEmpty) return;
+
+    String messageText = _controller.text;
+    _controller.clear();
+
     setState(() {
+      messages.add({'text': messageText, 'isUser': true});
       isTyping = true;
     });
 
-    await sendMessageToThread(message);
-    String chatGptResponse = await getChatGptResponse();
-    setState(() {
-      messages.add({"text": chatGptResponse, "isUser": false, "isChatGpt": true});
-      isTyping = false;
-    });
-
-    String customAssistantResponse = await getCustomAssistantResponse(message);
-    setState(() {
-      messages.add({"text": customAssistantResponse, "isUser": false, "isChatGpt": false});
-    });
+    _createMessage(messageText);
   }
 
-  Future<void> sendMessageToThread(String message) async {
+  void _createMessage(String message) async {
     final request = CreateMessage(
       role: 'user',
       content: message,
     );
-    await openAI.threads.messages.createMessage(
-      threadId: threadId,
-      request: request,
-    );
+
+    try {
+      await openAI.threads.v2.messages.createMessage(
+        threadId: threadId,
+        request: request,
+      );
+
+      // Now get the response from the assistant
+      final response = await openAI.threads.v2.messages.listMessage(threadId: threadId);
+
+      // Extract the actual text content from the response
+      String assistantMessage = response.data.first.content.map((content) {
+        if (content is TextData) {
+          return content.text; // Assuming `text` is a String in `TextData`
+        }
+        return '';
+      }).join(" ");
+
+      setState(() {
+        isTyping = false;
+        messages.add({'text': assistantMessage, 'isUser': false, 'isChatGpt': true});
+      });
+    } catch (error) {
+      // Handle error (e.g., show a message to the user)
+      print("Failed to send or receive message: $error");
+      setState(() {
+        isTyping = false;
+      });
+    }
   }
 
-  Future<String> getChatGptResponse() async {
-    final messages = await openAI.threads.messages.listMessage(threadId: threadId);
-    return messages.data.last.toString();  // Get the last message content
-  }
-
-  Future<String> getCustomAssistantResponse(String message) async {
-    final response = await openAI.assistant.retrieves(assistantId: assistantId);
-    return response.toString();  // Adjust according to actual response structure
-  }
 
   @override
   Widget build(BuildContext context) {
