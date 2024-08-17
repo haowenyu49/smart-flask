@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartflask/chatPage.dart';
+import 'package:smartflask/dietPage.dart';
 
 class ExploreItem {
   final String imageURL;
@@ -120,6 +121,7 @@ class _ExplorePageState extends State<ExplorePage> {
                     width: 250, // Taking the full width of the screen minus the margin
                     child: InkWell(
                       onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DietPage()));
                         // Handle the tap event
                         print('Card tapped: ${item.title}');
                       },
