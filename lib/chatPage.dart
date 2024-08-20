@@ -78,38 +78,57 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
     );
 
     try {
-      await openAI.threads.v2.messages.createMessage(
+      // Step 1: Create or use existing thread
+      if (threadId.isEmpty) {
+        threadId = await initiateThread();
+        print("Created new thread with ID: $threadId");
+      }
+
+      // Step 2: Create and send the message
+      final myMessage = await openAI.threads.v2.messages.createMessage(
         threadId: threadId,
         request: request,
       );
-      print("Message sent successfully: $message");
+      print("Message sent successfully: ${myMessage.content}");
 
-      // Get the response from the assistant
-      final response = await openAI.threads.v2.messages.listMessage(threadId: threadId);
+      // Step 3: Create a run to get the assistant's response
+      final myRun = await openAI.threads.v2.runs.createRun(
+        threadId: threadId,
+        request: CreateRun(assistantId: assistantId)
+      );
+      print("Run started with ID: ${myRun.id}");
 
-      // Check if the response contains any data
-      if (response.data.isNotEmpty && response.data.first.content.isNotEmpty) {
-        // Extract text content
-        String assistantMessage = response.data.first.content.map((content) {
+      // Step 4: Poll the run status until completed
+      var retrievedRun;
+      do {
+        retrievedRun = await openAI.threads.v2.runs.retrieveRun(
+          threadId: threadId,
+          runId: myRun.id,
+        );
+        print("Current run status: ${retrievedRun.status}");
+        await Future.delayed(Duration(seconds: 1)); // Add delay to avoid spamming the API
+      } while (retrievedRun.status == "queued" || retrievedRun.status == "in_progress");
+
+      // Step 5: Once the run is completed, retrieve the assistant's response
+      if (retrievedRun.status == "completed") {
+        final allMessages = await openAI.threads.v2.messages.listMessage(threadId: threadId);
+        String assistantMessage = allMessages.data.first.content.map((content) {
           if (content is TextData) {
-            print("Extracted text: ${content.text}");
             return content.text;
           }
           return '';
         }).join(" ");
+        print("Assistant's response: $assistantMessage");
 
-        print("Final Assistant Message: $assistantMessage");
-
+        // Update the UI with the assistant's message
         setState(() {
           isTyping = false;
           messages.add({'text': assistantMessage, 'isUser': false, 'isChatGpt': true});
         });
       } else {
-        // Handle empty content or data
-        print("No content received from assistant.");
+        print("Run did not complete successfully, status: ${retrievedRun.status}");
         setState(() {
           isTyping = false;
-          messages.add({'text': "No response received", 'isUser': false, 'isChatGpt': true});
         });
       }
     } catch (error) {
@@ -120,6 +139,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
       });
     }
   }
+
 
 
   @override
