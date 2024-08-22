@@ -89,6 +89,10 @@ class DietPage extends StatelessWidget {
                     },
                   ),
                 ),
+                Text("Water Intake",
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
+                ),
+                Text("${dietInfo.waterIntake}",style: TextStyle(fontSize: 24),)
 
               ],
           ),
