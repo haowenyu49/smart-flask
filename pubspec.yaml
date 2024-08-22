@@ -78,6 +78,8 @@ flutter:
     - assets/icons/apple-logo.png
     - assets/images/vegetarian.png
     - assets/images/keto.png
+    - assets/images/AHC.png
+    - assets/images/Salmon Tomato Salad.png
     - assets/.env
   fonts:
     - family: Raleway
