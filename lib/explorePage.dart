@@ -106,6 +106,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
                     },
                     child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       clipBehavior: Clip.antiAlias, // This ensures that the image is clipped to the card's boundaries
                       child: Stack(
                         children: <Widget>[
@@ -174,6 +175,7 @@ class _ExplorePageState extends State<ExplorePage> {
                         print('Card tapped: ${item.title}');
                       },
                       child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                         clipBehavior: Clip.antiAlias, // This ensures that the image is clipped to the card's boundaries
                         child: Stack(
                           children: <Widget>[

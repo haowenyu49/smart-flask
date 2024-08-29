@@ -59,6 +59,8 @@ Future<void> _fetchUserData() async{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                elevation: 10,
                 margin: EdgeInsets.all(15),
                 child: InkWell(
                   onTap: (){
@@ -90,7 +92,7 @@ Future<void> _fetchUserData() async{
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 15),
+                padding: EdgeInsets.only(left: 15, bottom: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

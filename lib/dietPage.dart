@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartflask/components/colorPalette.dart';
 import 'package:smartflask/explorePage.dart';
 
 class DietPage extends StatelessWidget {
@@ -9,6 +10,8 @@ class DietPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ColorPalette.primary,
+        elevation: 2,
         title: Text('title')
       ),
       body: SingleChildScrollView(

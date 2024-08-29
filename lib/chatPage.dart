@@ -1,6 +1,7 @@
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:smartflask/components/colorPalette.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -152,6 +153,8 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: ColorPalette.primary,
         title: Text("Chat with Assistants"),
       ),
       body: Column(
@@ -169,7 +172,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
                     margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
                     decoration: BoxDecoration(
-                      color: isUser ? Colors.grey[300] : (isChatGpt ? Colors.blue[200] : Colors.green[200]),
+                      color: isUser ? ColorPalette.bg : ColorPalette.primary,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: Text(
@@ -206,7 +209,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: Icon(Icons.send, color: ColorPalette.accent,),
                   onPressed: _sendMessage,
                 ),
               ],

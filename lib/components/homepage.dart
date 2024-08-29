@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:smartflask/components/ArcProgressIndicator.dart';
+import 'package:smartflask/components/colorPalette.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
 import 'package:smartflask/main.dart';
 import 'package:smartflask/components/pie_chart.dart';
@@ -27,7 +28,9 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                 margin: EdgeInsets.all(10),
+                elevation: 4,
                 child: Padding(
                     padding: EdgeInsets.all(20),
                     child: Column(
@@ -37,8 +40,8 @@ class _HomePageState extends State<HomePage> {
                             child: ArcProgressIndicator(
                               progress: progress,
                               strokeWidth: 8.0,
-                              child: const Icon(Icons.water_drop_outlined,
-                                color: Colors.blue,
+                              child: Icon(Icons.water_drop_outlined,
+                                color: ColorPalette.primary,
                                 size:75,
                               ),
                             ),
@@ -84,6 +87,8 @@ class _HomePageState extends State<HomePage> {
                 )
             ),
             Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              elevation: 4,
               margin: EdgeInsets.all(10),
               child: Padding(
                 padding: EdgeInsets.all(20),
@@ -92,6 +97,8 @@ class _HomePageState extends State<HomePage> {
             ),
 
             Card (
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                elevation: 4,
                 margin: EdgeInsets.all(10),
                 child: Padding(
                   padding: EdgeInsets.all(20),
@@ -100,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget> [
                         Text('Set Reminder',
-                            style: TextStyle(fontSize: 20,color:Colors.blue)),
+                            style: TextStyle(fontSize: 20)),
                       ]
                   )
                   ),
@@ -251,12 +258,12 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
                             ]));
                   });
             },
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                 'Amount of water this week',
-                style: TextStyle(fontSize: 24, color: Colors.blue),
+                style: TextStyle(fontSize: 24, ),
               ),
-              Icon(Icons.arrow_forward, color: Colors.blue),
+              Icon(Icons.arrow_forward, color: ColorPalette.primary),
             ])));
   }
 }

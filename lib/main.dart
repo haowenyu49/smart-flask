@@ -4,12 +4,14 @@ import 'package:smartflask/SplashScreen.dart';
 
 import 'package:smartflask/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:smartflask/components/colorPalette.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await dotenv.load(fileName: 'assets/.env');
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -21,22 +23,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
         fontFamily: 'Raleway',
         colorScheme: ColorScheme(
-            primary: Colors.blue,
-            secondary: Colors.blueAccent,
-            surface: Colors.white70,
+            primary: ColorPalette.primary,
+            secondary: ColorPalette.secondary,
+            surface: Colors.white,
             background: Colors.white,
             error: Colors.red,
             onPrimary: Colors.black,
             onSecondary: Colors.black,
             onBackground: Colors.white,
-            onSurface: Colors.black,
+            onSurface: ColorPalette.accent,
             onError: Colors.white,
             brightness: Brightness.light
         ),
         useMaterial3: true,
+        appBarTheme: AppBarTheme(
+          elevation: 20,
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.black
+        )
+
       ),
       home: const SplashScreen(),
     );
