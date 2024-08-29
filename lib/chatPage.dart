@@ -14,6 +14,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   late OpenAI openAI;
   late String assistantId;
   late String threadId;
+  bool _isOpenAIInitialized = false;
 
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -21,7 +22,11 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _initializeOpenAI();
+    _initializeOpenAI().then((_) {
+      setState(() {
+        _isOpenAIInitialized = true;
+      });
+    });
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -55,10 +60,18 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
     }
   }
 
-
-
   void _sendMessage() async {
     if (_controller.text.isEmpty) return;
+
+    // Check if OpenAI is initialized and threadId is ready
+    if (!_isOpenAIInitialized || threadId.isEmpty) {
+      print("OpenAI is not initialized yet or threadId is not ready.");
+      threadId = await initiateThread();
+      if (threadId.isEmpty) {
+        print("Failed to initialize thread ID.");
+        return; // Exit if thread initialization fails
+      }
+    }
 
     String messageText = _controller.text;
     _controller.clear();
@@ -93,8 +106,8 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
 
       // Step 3: Create a run to get the assistant's response
       final myRun = await openAI.threads.v2.runs.createRun(
-        threadId: threadId,
-        request: CreateRun(assistantId: assistantId)
+          threadId: threadId,
+          request: CreateRun(assistantId: assistantId)
       );
       print("Run started with ID: ${myRun.id}");
 
@@ -112,12 +125,7 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
       // Step 5: Once the run is completed, retrieve the assistant's response
       if (retrievedRun.status == "completed") {
         final allMessages = await openAI.threads.v2.messages.listMessage(threadId: threadId);
-        String assistantMessage = allMessages.data.first.content.map((content) {
-          if (content is TextData) {
-            return content.text;
-          }
-          return '';
-        }).join(" ");
+        String assistantMessage = allMessages.data.first.content.first.text.value.toString();
         print("Assistant's response: $assistantMessage");
 
         // Update the UI with the assistant's message
@@ -139,8 +147,6 @@ class _ChatPageState extends State<ChatPage> with SingleTickerProviderStateMixin
       });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
