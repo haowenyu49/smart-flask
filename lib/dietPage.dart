@@ -12,7 +12,7 @@ class DietPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: ColorPalette.primary,
         elevation: 2,
-        title: Text('title')
+        title: Text(dietInfo.name)
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -24,8 +24,11 @@ class DietPage extends StatelessWidget {
                 style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 10,),
-                Text('${dietInfo.description}',
-                style: TextStyle(fontSize: 24),
+          Column(
+            children: dietInfo.description.map<Widget>((e) => Text(e,style: TextStyle(fontSize: 24),)).toList()
+              ..addAll([
+                Container() //You can use addAll method and add some juicy widgets
+              ]),
                 ),
                 SizedBox(height: 10,),
                 Text('Recommended Dishes',
@@ -95,8 +98,12 @@ class DietPage extends StatelessWidget {
                 Text("Water Intake",
                 style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
                 ),
-                Text("${dietInfo.waterIntake}",style: TextStyle(fontSize: 24),)
-
+                Column(
+                  children: dietInfo.waterIntake.map<Widget>((e) => Text(e,style: TextStyle(fontSize: 24),)).toList()
+                    ..addAll([
+                      Container() //You can use addAll method and add some juicy widgets
+                    ]),
+                ),
               ],
           ),
         ),

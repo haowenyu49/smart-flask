@@ -22,21 +22,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context)
   {
-    return Center(
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              margin: EdgeInsets.all(10),
+              elevation: 4,
+              child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                      children: <Widget> [
+                        Container(
+                          child: Container(
 
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                margin: EdgeInsets.all(10),
-                elevation: 4,
-                child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                        children: <Widget> [
-                          Positioned(
-                            bottom: 8,
                             child: ArcProgressIndicator(
                               progress: progress,
                               strokeWidth: 8.0,
@@ -46,75 +45,74 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                           Positioned(
-                            bottom: 2,
-                            child: Text(
-                              '$drankToday / $dailyGoal ml drank',
-                              style: TextStyle(fontSize: 24),
-                            ),
+                        ),
+                         Container(
+                          child: Text(
+                            '$drankToday / $dailyGoal ml drank',
+                            style: TextStyle(fontSize: 24),
                           ),
-                          TextButton(onPressed: () async {
-                            DateTime time = DateTime.now();
-                            String date = DateFormat('MM-dd-yyyy').format(time);
-                            List<int> waterLevels = await AuthenticationHelper().getWaterLevel(date);
-                            if (waterLevels.isNotEmpty) {
-                              int totalDrank = waterLevels.reduce((a, b) => a + b);
-                              double newProgress = totalDrank / dailyGoal;
+                        ),
+                        TextButton(onPressed: () async {
+                          DateTime time = DateTime.now();
+                          String date = DateFormat('MM-dd-yyyy').format(time);
+                          List<int> waterLevels = await AuthenticationHelper().getWaterLevel(date);
+                          if (waterLevels.isNotEmpty) {
+                            int totalDrank = waterLevels.reduce((a, b) => a + b);
+                            double newProgress = totalDrank / dailyGoal;
 
-                              setState(() {
-                                drankToday = totalDrank;
-                                progress = newProgress;
-                              });
-                            } else {
-                              setState(() {
-                                drankToday = 0;
-                                progress = 0.0;
-                              });
-                            }
+                            setState(() {
+                              drankToday = totalDrank;
+                              progress = newProgress;
+                            });
+                          } else {
+                            setState(() {
+                              drankToday = 0;
+                              progress = 0.0;
+                            });
+                          }
 
-                          },
-                              child: const Row (
-                              mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget> [
-                                    Text('Refresh'),
-                                    Icon(Icons.refresh),
-                                  ]
-                              )
-                          ),
-                          SizedBox(height: 20),
-                        ]
-                    )
-                )
+                        },
+                            child: const Row (
+                            mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget> [
+                                  Text('Refresh'),
+                                  Icon(Icons.refresh),
+                                ]
+                            )
+                        ),
+                        SizedBox(height: 20),
+                      ]
+                  )
+              )
+          ),
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            elevation: 4,
+            margin: EdgeInsets.all(10),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: BottomSheetClass(),
             ),
-            Card(
+          ),
+
+          Card (
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               elevation: 4,
               margin: EdgeInsets.all(10),
               child: Padding(
                 padding: EdgeInsets.all(20),
-                child: BottomSheetClass(),
-              ),
-            ),
 
-            Card (
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                elevation: 4,
-                margin: EdgeInsets.all(10),
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-
-                  child: TextButton(onPressed: () {}, child: const Row (
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget> [
-                        Text('Set Reminder',
-                            style: TextStyle(fontSize: 20)),
-                      ]
-                  )
-                  ),
+                child: TextButton(onPressed: () {}, child: const Row (
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget> [
+                      Text('Set Reminder',
+                          style: TextStyle(fontSize: 20)),
+                    ]
                 )
-            ),
-          ]
-      ),
+                ),
+              )
+          ),
+        ]
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smartflask/Dashboard.dart';
+import 'package:smartflask/components/colorPalette.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
 import 'package:smartflask/components/homepage.dart';
 import 'package:smartflask/components/loginPage.dart';
@@ -54,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: ColorPalette.primary,
         body: Stack(
           alignment: Alignment.center,
           children: [
@@ -78,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 200,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/logo.png'),
+                        image: AssetImage('assets/icons/logo.png'),
                         fit: BoxFit.cover,
                       ),
                     ),

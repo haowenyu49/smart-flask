@@ -35,44 +35,18 @@ class _ExplorePageState extends State<ExplorePage> {
   ];
   final List<Diet> diets = [
     Diet(name: "Keto",
-      description: [
-      "Lorem ipsum odor amet, consectetuer adipiscing elit. Potenti luctus vel sodales senectus posuere est ultrices augue. Inceptos vitae eleifend maecenas senectus etiam lacinia tortor. Proin ultrices morbi erat interdum pellentesque condimentum. Hac ut ipsum a dolor morbi nibh ultricies velit. Sagittis habitant mattis habitasse mi amet. Montes finibus convallis, faucibus cras morbi phasellus rutrum. Sapien ridiculus elementum massa ante blandit penatibus lacus. Lectus tristique himenaeos class curabitur lectus nibh.",
-
-  "Fringilla felis vehicula quam molestie hac; a dui. Eleifend euismod amet fusce ex cubilia in curabitur bibendum. Viverra senectus placerat efficitur proin donec dolor dictum per interdum. Ullamcorper neque bibendum purus iaculis morbi porttitor conubia placerat. Malesuada interdum tellus metus habitasse tristique magna primis. Ut litora nec, dui felis dolor cursus sit vehicula class. Diam cubilia class; fames gravida adipiscing semper fames imperdiet habitant. Hac non nunc per nostra curae. Senectus iaculis aliquam semper magna nascetur nascetur congue ut.",
-
-"Arcu sit scelerisque ligula vel, finibus felis aenean consequat. Sociosqu arcu gravida dignissim morbi vitae maximus, natoque ridiculus consectetur. Eleifend per magna ipsum molestie vulputate. Leo nascetur primis vitae netus; sed congue pharetra. Habitant curae ac sociosqu ante a massa luctus. Mi cursus non ultrices auctor ac. Cras pharetra nibh diam maximus, imperdiet metus semper hendrerit pretium. Orci dignissim congue ut neque nisi. Turpis ullamcorper auctor, sociosqu scelerisque facilisi ac malesuada aliquam? Cursus vulputate sit facilisi cras tellus nam eget litora.",
-
- " Hendrerit velit tristique; proin egestas natoque dapibus diam. Natoque sociosqu dapibus morbi accumsan hendrerit pretium morbi. Nec ac tortor diam semper quis parturient velit. Ipsum sed sem fermentum in diam. Cubilia scelerisque molestie dui integer quam vitae natoque sollicitudin. Maecenas cubilia eu hendrerit vestibulum inceptos. Proin dui vitae morbi natoque rutrum hac egestas curae. Efficitur aenean magna vel pellentesque, interdum est ante amet? Aegestas iaculis hac dis tempor leo.",
-
-  "Elementum aptent metus ullamcorper semper nisl felis scelerisque porttitor. Quisque euismod gravida fusce vitae risus auctor risus accumsan ridiculus. Proin malesuada nisl habitant habitasse neque. Aenean inceptos consequat penatibus neque; ex morbi dictumst? Hac mattis iaculis ad aenean sociosqu cras ut tempor felis. Congue sem suspendisse posuere sit pulvinar vehicula."
-    ],
+      description: ["A ketogenic (keto) diet is a low-carb, high-fat eating plan designed to shift the body into a state of ketosis, where it burns fat for fuel instead of carbohydrates. Typically, the diet involves consuming about 70-75% of daily calories from fat, 20-25% from protein, and only 5-10% from carbohydrates. Staying hydrated is crucial on a keto diet because the body loses more water and electrolytes as it shifts away from using carbs."],
       dishTypes: {"Salmon Tomato Salad": "assets/images/Salmon Tomato Salad.png", "Avocado, Ham, and Cheese": "assets/images/AHC.png"},
       waterIntake: [
-        "Lorem ipsum odor amet, consectetuer adipiscing elit. Potenti luctus vel sodales senectus posuere est ultrices augue. Inceptos vitae eleifend maecenas senectus etiam lacinia tortor. Proin ultrices morbi erat interdum pellentesque condimentum. Hac ut ipsum a dolor morbi nibh ultricies velit. Sagittis habitant mattis habitasse mi amet. Montes finibus convallis, faucibus cras morbi phasellus rutrum. Sapien ridiculus elementum massa ante blandit penatibus lacus. Lectus tristique himenaeos class curabitur lectus nibh.",
-
-        "Fringilla felis vehicula quam molestie hac; a dui. Eleifend euismod amet fusce ex cubilia in curabitur bibendum. Viverra senectus placerat efficitur proin donec dolor dictum per interdum. Ullamcorper neque bibendum purus iaculis morbi porttitor conubia placerat. Malesuada interdum tellus metus habitasse tristique magna primis. Ut litora nec, dui felis dolor cursus sit vehicula class. Diam cubilia class; fames gravida adipiscing semper fames imperdiet habitant. Hac non nunc per nostra curae. Senectus iaculis aliquam semper magna nascetur nascetur congue ut.",
-
+        "Aim to drink at least 8-10 glasses of water daily to stay hydrated, and consider adding a pinch of salt or an electrolyte supplement to your water to help maintain balance. Proper hydration supports the body’s transition to ketosis and can help minimize common side effects like headaches and fatigue."
       ]
     ),
     Diet(name: "Vegetarian",
         description: [
-          "Lorem ipsum odor amet, consectetuer adipiscing elit. Potenti luctus vel sodales senectus posuere est ultrices augue. Inceptos vitae eleifend maecenas senectus etiam lacinia tortor. Proin ultrices morbi erat interdum pellentesque condimentum. Hac ut ipsum a dolor morbi nibh ultricies velit. Sagittis habitant mattis habitasse mi amet. Montes finibus convallis, faucibus cras morbi phasellus rutrum. Sapien ridiculus elementum massa ante blandit penatibus lacus. Lectus tristique himenaeos class curabitur lectus nibh.",
-
-          "Fringilla felis vehicula quam molestie hac; a dui. Eleifend euismod amet fusce ex cubilia in curabitur bibendum. Viverra senectus placerat efficitur proin donec dolor dictum per interdum. Ullamcorper neque bibendum purus iaculis morbi porttitor conubia placerat. Malesuada interdum tellus metus habitasse tristique magna primis. Ut litora nec, dui felis dolor cursus sit vehicula class. Diam cubilia class; fames gravida adipiscing semper fames imperdiet habitant. Hac non nunc per nostra curae. Senectus iaculis aliquam semper magna nascetur nascetur congue ut.",
-
-          "Arcu sit scelerisque ligula vel, finibus felis aenean consequat. Sociosqu arcu gravida dignissim morbi vitae maximus, natoque ridiculus consectetur. Eleifend per magna ipsum molestie vulputate. Leo nascetur primis vitae netus; sed congue pharetra. Habitant curae ac sociosqu ante a massa luctus. Mi cursus non ultrices auctor ac. Cras pharetra nibh diam maximus, imperdiet metus semper hendrerit pretium. Orci dignissim congue ut neque nisi. Turpis ullamcorper auctor, sociosqu scelerisque facilisi ac malesuada aliquam? Cursus vulputate sit facilisi cras tellus nam eget litora.",
-
-          " Hendrerit velit tristique; proin egestas natoque dapibus diam. Natoque sociosqu dapibus morbi accumsan hendrerit pretium morbi. Nec ac tortor diam semper quis parturient velit. Ipsum sed sem fermentum in diam. Cubilia scelerisque molestie dui integer quam vitae natoque sollicitudin. Maecenas cubilia eu hendrerit vestibulum inceptos. Proin dui vitae morbi natoque rutrum hac egestas curae. Efficitur aenean magna vel pellentesque, interdum est ante amet? Aegestas iaculis hac dis tempor leo.",
-
-          "Elementum aptent metus ullamcorper semper nisl felis scelerisque porttitor. Quisque euismod gravida fusce vitae risus auctor risus accumsan ridiculus. Proin malesuada nisl habitant habitasse neque. Aenean inceptos consequat penatibus neque; ex morbi dictumst? Hac mattis iaculis ad aenean sociosqu cras ut tempor felis. Congue sem suspendisse posuere sit pulvinar vehicula."
+          "A vegetarian diet primarily consists of plant-based foods, such as vegetables, fruits, grains, nuts, seeds, and legumes. It excludes meat, poultry, and fish but may include animal products like dairy and eggs, depending on the type (lacto-vegetarian, ovo-vegetarian, or lacto-ovo-vegetarian). This diet is often adopted for health, ethical, or environmental reasons. It can provide all necessary nutrients if well-planned, focusing on a variety of foods to meet protein, vitamin, and mineral needs."
         ],
         dishTypes: {"Salmon Tomato Salad": "assets/images/Salmon Tomato Salad.png", "Avocado, Ham, and Cheese": "assets/images/AHC.png"},
-        waterIntake: [
-          "Lorem ipsum odor amet, consectetuer adipiscing elit. Potenti luctus vel sodales senectus posuere est ultrices augue. Inceptos vitae eleifend maecenas senectus etiam lacinia tortor. Proin ultrices morbi erat interdum pellentesque condimentum. Hac ut ipsum a dolor morbi nibh ultricies velit. Sagittis habitant mattis habitasse mi amet. Montes finibus convallis, faucibus cras morbi phasellus rutrum. Sapien ridiculus elementum massa ante blandit penatibus lacus. Lectus tristique himenaeos class curabitur lectus nibh.",
-
-          "Fringilla felis vehicula quam molestie hac; a dui. Eleifend euismod amet fusce ex cubilia in curabitur bibendum. Viverra senectus placerat efficitur proin donec dolor dictum per interdum. Ullamcorper neque bibendum purus iaculis morbi porttitor conubia placerat. Malesuada interdum tellus metus habitasse tristique magna primis. Ut litora nec, dui felis dolor cursus sit vehicula class. Diam cubilia class; fames gravida adipiscing semper fames imperdiet habitant. Hac non nunc per nostra curae. Senectus iaculis aliquam semper magna nascetur nascetur congue ut.",
-
-        ]
+        waterIntake: ["As for water intake, the general recommendation is about 8-10 cups (2-2.5 liters) per day for most adults. However, individual needs can vary based on factors like age, activity level, climate, and overall health."]
     )
   ];
   @override
