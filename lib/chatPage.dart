@@ -4,6 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:smartflask/components/colorPalette.dart';
 
 class ChatPage extends StatefulWidget {
+  final String assistantID = "";
+
+  const ChatPage({super.key, required assistantID});
   @override
   _ChatPageState createState() => _ChatPageState();
 }

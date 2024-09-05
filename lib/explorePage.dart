@@ -6,8 +6,9 @@ class ExploreItem {
   final String imageURL;
   final String title;
   final String subtitle;
+  final String assistantID = "";
 
-  ExploreItem({required this.imageURL, required this.title, required this.subtitle});
+  ExploreItem({required this.imageURL, required this.title, required this.subtitle, assistantID});
 }
 class Diet {
   final String name;
@@ -26,8 +27,8 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   final List<ExploreItem> itemsAI = [
-    ExploreItem(imageURL: 'assets/images/droplet.png', title: "Water AI", subtitle: "Chat with AI to learn more about better habits to help keep you hydrated!"),
-    ExploreItem(imageURL: 'assets/images/bottles.png', title: 'Explore Your Bottle', subtitle: "Learn more about the functionality of your bottle!")
+    ExploreItem(imageURL: 'assets/images/droplet.png', title: "Water AI", subtitle: "Chat with AI to learn more about better habits to help keep you hydrated!", assistantID: "asst_e2cMEOXkbAcIDCafSUC0sq3e"),
+    ExploreItem(imageURL: 'assets/images/bottles.png', title: 'Explore Your Bottle', subtitle: "Learn more about the functionality of your bottle!", assistantID: "asst_cHAauFF2GrCamuSly659MhkK")
   ];
   final List<ExploreItem>dietItems = [
     ExploreItem(imageURL: 'assets/images/keto.png', title: "Keto", subtitle: "Learn mre about some of the keto diets that can be helpful!"),
@@ -76,7 +77,7 @@ class _ExplorePageState extends State<ExplorePage> {
                   child: InkWell(
                     onTap: () {
                       // Handle the tap event
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPage()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPage(assistantID: itemsAI[index].assistantID)));
 
                     },
                     child: Card(
