@@ -14,12 +14,12 @@ class _GoalsPageState extends State<GoalsPage> {
   final ScrollController _scrollController = ScrollController();
 
   // Global keys for each section
-  final GlobalKey _sleepKey = GlobalKey();
+  final GlobalKey _waterKey = GlobalKey(); // Updated key for Water section
   final GlobalKey _activityKey = GlobalKey();
   final GlobalKey _healthKey = GlobalKey();
 
   // Goal data
-  int sleepGoal = 6; // Default values
+  int dailyWaterGoal = 2000; // Default water goal in milliliters (ml)
   int stepsGoal = 10000;
   int activeMinutesGoal = 30;
 
@@ -35,7 +35,7 @@ class _GoalsPageState extends State<GoalsPage> {
   Future<void> _loadGoalsData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      sleepGoal = prefs.getInt('sleepGoal') ?? 6;
+      dailyWaterGoal = prefs.getInt('dailyWaterGoal') ?? 2000;
       stepsGoal = prefs.getInt('stepsGoal') ?? 10000;
       activeMinutesGoal = prefs.getInt('activeMinutesGoal') ?? 30;
     });
@@ -43,7 +43,7 @@ class _GoalsPageState extends State<GoalsPage> {
 
   Future<void> _saveGoalsData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('sleepGoal', sleepGoal);
+    await prefs.setInt('dailyWaterGoal', dailyWaterGoal);
     await prefs.setInt('stepsGoal', stepsGoal);
     await prefs.setInt('activeMinutesGoal', activeMinutesGoal);
   }
@@ -51,8 +51,8 @@ class _GoalsPageState extends State<GoalsPage> {
   void _scrollToSection(String section) {
     GlobalKey? sectionKey;
 
-    if (section == 'Sleep') {
-      sectionKey = _sleepKey;
+    if (section == 'Water Consumption') {
+      sectionKey = _waterKey;
     } else if (section == 'Activity') {
       sectionKey = _activityKey;
     } else if (section == 'Health') {
@@ -74,8 +74,8 @@ class _GoalsPageState extends State<GoalsPage> {
   // Helper method to update and store data
   void _updateGoal(String goalType, int newValue) {
     setState(() {
-      if (goalType == 'sleep') {
-        sleepGoal = newValue;
+      if (goalType == 'water') {
+        dailyWaterGoal = newValue;
       } else if (goalType == 'steps') {
         stepsGoal = newValue;
       } else if (goalType == 'activeMinutes') {
@@ -90,7 +90,6 @@ class _GoalsPageState extends State<GoalsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Goals'),
-        elevation: 2,
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
@@ -99,14 +98,13 @@ class _GoalsPageState extends State<GoalsPage> {
           child: Column(
             children: [
               _buildGoalSection(
-                  _sleepKey,
-                  'Sleep',
+                  _waterKey,
+                  'Water Consumption',
                   [
-                    _buildGoalRow('Bedtime', '2:00 AM'),
-                    _buildGoalRow('Wake time', '7:30 AM'),
-                    _buildGoalRow('Sleep duration', '$sleepGoal hours')
+                    _buildGoalRow('Daily Goal', '$dailyWaterGoal ml'),
+                    _buildGoalRow('Weekly Goal', '${dailyWaterGoal * 7} ml'),
                   ],
-                      () => _showGoalDialog('sleep', sleepGoal)),
+                      () => _showGoalDialog('water', dailyWaterGoal)),
               _buildGoalSection(
                   _activityKey,
                   'Activity',

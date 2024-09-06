@@ -121,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         CustomCard(
                           icon: Icons.water_drop_outlined,
                           title: 'Water Consumption',
-                          subTitle: '3 Goals',
+                          subTitle: '2 Goals',
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(

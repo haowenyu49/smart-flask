@@ -279,11 +279,10 @@ Future<List<Map<String, dynamic>>> fetchLast7DaysData() async {
   final sevenDaysAgo = now.subtract(Duration(days: 7));
 
   final querySnapshot = await FirebaseFirestore.instance
-      .collection('water_consumption')
-      .where('userId', isEqualTo: userUID)
-      .where('date', isGreaterThanOrEqualTo: sevenDaysAgo)
-      .orderBy('date', descending: true)
-      .limit(7)
+      .collection('users')
+      .doc(AuthenticationHelper().uid)
+      .collection('water-consumption')
+      .doc()
       .get();
 
   return querySnapshot.docs
