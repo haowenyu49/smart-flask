@@ -182,87 +182,96 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: TextButton(
-            onPressed: () {
-              showModalBottomSheet<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                        height: 600,
-                        color: Colors.white,
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 10),
-                              Container(
-                                height: 60,
-                                child: Center(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-                                      child: IntrinsicWidth(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center, // Center the children
-                                          children: List<Widget>.generate(7, (index) {
-                                            final date = DateTime.now().subtract(Duration(days: index));
-                                            return Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                              child: DateDisplay(
-                                                  date: date,
-                                                  onTap: () {
-                                                    setState(() {
-                                                      selectedDay = DateFormat('EEEE').format(date);
-                                                    });
-                                                  },
-                                              ),
-                                            );
-                                          }),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(height: 10),
-                              Positioned(
-                                child: FutureBuilder<Map<String, dynamic>>(
-                                  future: fetchLast7DaysData(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
-                                    }
-                                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                      return Text('No data available');
-                                    }
-                                    final data = snapshot.data!;
-                                    // Your logic here to display the fetched data
-                                    // For simplicity, this example just lists the amounts
-                                    return ListView.builder(
-                                      itemCount: data.length,
-                                      itemBuilder: (context, index) {
-                                        final dayData = data[index];
-                                        return ListTile(
-                                          title: Text(DateFormat('MM/dd').format(dayData['date'])),
-                                          subtitle: Text('${dayData['amount']} ml'),
-                                        );
+      child: TextButton(
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                height: 600,
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 10),
+                    Container(
+                      height: 60,
+                      child: Center(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+                            child: IntrinsicWidth(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center, // Center the children
+                                children: List<Widget>.generate(7, (index) {
+                                  final date = DateTime.now().subtract(Duration(days: index));
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: DateDisplay(
+                                      date: date,
+                                      onTap: () {
+                                        setState(() {
+                                          selectedDay = DateFormat('EEEE').format(date);
+                                        });
                                       },
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                }),
                               ),
-                            ]));
-                  });
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 10),
+
+                    // Remove Positioned and directly place FutureBuilder
+                    Expanded(
+                      child: FutureBuilder<Map<String, dynamic>>(
+                        future: fetchLast7DaysData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          }
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return Text('No data available');
+                          }
+                          final data = snapshot.data!;
+                          // Your logic here to display the fetched data
+                          return ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              final dayData = data.entries.elementAt(index);
+                              return ListTile(
+                                title: Text(DateFormat('MM/dd').format(DateTime.parse(dayData.key))),
+                                subtitle: Text('${dayData.value} ml'),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Text(
-                'Amount of water this week',
-                style: TextStyle(fontSize: 24, ),
-              ),
-              Icon(Icons.arrow_forward, color: ColorPalette.primary),
-            ])));
+          );
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Amount of water this week',
+              style: TextStyle(fontSize: 24),
+            ),
+            Icon(Icons.arrow_forward, color: ColorPalette.primary),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -274,18 +283,25 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
 
 
 Future<List<Map<String, dynamic>>> fetchLast7DaysData() async {
-  final userUID = 'YOUR_USER_UID';
+  final userUID = 'YOUR_USER_UID'; // Replace with actual user UID if needed
   final now = DateTime.now();
-  final sevenDaysAgo = now.subtract(Duration(days: 7));
+  final List<Map<String, dynamic>> last7DaysData = [];
 
-  final querySnapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(AuthenticationHelper().uid)
-      .collection('water-consumption')
-      .doc()
-      .get();
+  for (int i = 0; i < 7; i++) {
+    final date = now.subtract(Duration(days: i));
+    final formattedDate = "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
 
-  return querySnapshot.docs
-      .map((doc) => doc.data() as Map<String, dynamic>)
-      .toList();
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userUID)
+        .collection('water-drank')
+        .doc(formattedDate) // Get the document based on the date format in Firestore
+        .get();
+
+    if (docSnapshot.exists) {
+      last7DaysData.add(docSnapshot.data() as Map<String, dynamic>);
+    }
+  }
+
+  return last7DaysData;
 }
