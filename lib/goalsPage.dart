@@ -89,6 +89,7 @@ class _GoalsPageState extends State<GoalsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
         title: Text('Goals'),
       ),
       body: SingleChildScrollView(

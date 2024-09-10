@@ -9,6 +9,7 @@ class DetailedUserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
         title: Text('User Info'),
       ),
       body: userData == null
