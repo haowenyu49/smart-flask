@@ -1,184 +1,156 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:smartflask/components/ArcProgressIndicator.dart';
 import 'package:smartflask/components/colorPalette.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
-import 'package:smartflask/main.dart';
-import 'package:smartflask/components/pie_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+
+// Assuming you have these imports
+import 'package:smartflask/components/ArcProgressIndicator.dart';
+// ... other necessary imports
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
+
 class _HomePageState extends State<HomePage> {
-  int selectedPageIndex = 0;
   double progress = 0.0;
   int drankToday = 0;
   int dailyGoal = 2000;
 
   @override
-  Widget build(BuildContext context)
-  {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-              margin: EdgeInsets.all(10),
-              elevation: 4,
-              child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                      children: <Widget> [
-                        Container(
-                          child: Container(
-
-                            child: ArcProgressIndicator(
-                              progress: progress,
-                              strokeWidth: 8.0,
-                              child: Icon(Icons.water_drop_outlined,
-                                color: ColorPalette.primary,
-                                size:75,
-                              ),
-                            ),
-                          ),
-                        ),
-                         Container(
-                          child: Text(
-                            '$drankToday / $dailyGoal ml drank',
-                            style: TextStyle(fontSize: 24),
-                          ),
-                        ),
-                        TextButton(onPressed: () async {
-                          DateTime time = DateTime.now();
-                          String date = DateFormat('MM-dd-yyyy').format(time);
-                          List<int> waterLevels = await AuthenticationHelper().getWaterLevel(date);
-                          if (waterLevels.isNotEmpty) {
-                            int totalDrank = waterLevels.reduce((a, b) => a + b);
-                            double newProgress = totalDrank / dailyGoal;
-
-                            setState(() {
-                              drankToday = totalDrank;
-                              progress = newProgress;
-                            });
-                          } else {
-                            setState(() {
-                              drankToday = 0;
-                              progress = 0.0;
-                            });
-                          }
-
-                        },
-                            child: const Row (
-                            mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget> [
-                                  Text('Refresh'),
-                                  Icon(Icons.refresh),
-                                ]
-                            )
-                        ),
-                        SizedBox(height: 20),
-                      ]
-                  )
-              )
-          ),
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-            elevation: 4,
-            margin: EdgeInsets.all(10),
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: BottomSheetClass(),
-            ),
-          ),
-
-          Card (
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-              elevation: 4,
-              margin: EdgeInsets.all(10),
-              child: Padding(
-                padding: EdgeInsets.all(20),
-
-                child: TextButton(onPressed: () {}, child: const Row (
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget> [
-                      Text('Set Reminder',
-                          style: TextStyle(fontSize: 20)),
-                    ]
-                )
-                ),
-              )
-          ),
-        ]
-    );
+  void initState() {
+    super.initState();
+    // Optionally, fetch today's data on widget load
+    _updateTodayData();
   }
 
-}
-class DateDisplay extends StatelessWidget {
-  final DateTime date;
-  final VoidCallback onTap;
+  Future<void> _updateTodayData() async {
+    int totalDrank = await fetchTodayData();
+    double newProgress = totalDrank / dailyGoal;
 
-  DateDisplay({Key? key, required this.date, required this.onTap}) : super(key: key);
+    setState(() {
+      drankToday = totalDrank;
+      progress = newProgress.clamp(0.0, 1.0);
+    });
+  }
+
+  Future<int> fetchTodayData() async {
+    final userUID = AuthenticationHelper().uid;
+    final date = DateTime.now();
+    final formattedDate = DateFormat('MM-dd-yyyy').format(date);
+
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userUID)
+        .collection('water-drank')
+        .doc(formattedDate)
+        .get();
+
+    if (docSnapshot.exists) {
+      final data = docSnapshot.data()!;
+      final waterConsumption = data['water-consumption'] as Map<String, dynamic>;
+
+      List<int> timestamps =
+      waterConsumption.keys.map((e) => int.parse(e)).toList();
+      timestamps.sort();
+
+      List<int> waterLevels = timestamps
+          .map((ts) => waterConsumption[ts.toString()] as int)
+          .toList();
+
+      int totalWaterDrankMm = 0;
+      for (int i = 1; i < waterLevels.length; i++) {
+        int difference = waterLevels[i - 1] - waterLevels[i];
+        if (difference > 0) {
+          totalWaterDrankMm += difference;
+        }
+      }
+
+      int totalWaterDrankMl = convertMmToMl(totalWaterDrankMm);
+      return totalWaterDrankMl;
+    } else {
+      return 0;
+    }
+  }
+
+  int convertMmToMl(int mm) {
+    // Adjust the conversion factor based on your bottle's dimensions
+    double conversionFactor = 710 / 200; // Example: 710 ml capacity, 200 mm height
+    return (mm * conversionFactor).toInt();
+  }
 
   @override
   Widget build(BuildContext context) {
-    String dayNumber = DateFormat('d').format(date); // Day number, e.g., "23"
-    String dayName = DateFormat('E').format(date); // Day name abbreviation, e.g., "Mon"
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8), // Reduced padding
-        decoration: BoxDecoration(
-          color: Colors.blue[50], // Change to desired background color
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              dayNumber,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16, // Reduced font size if necessary
-                color: Colors.blue, // Change to desired text color
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        // Your original Card widget
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          margin: EdgeInsets.all(10),
+          elevation: 4,
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: ArcProgressIndicator(
+                    progress: progress,
+                    strokeWidth: 8.0,
+                    child: Icon(
+                      Icons.water_drop_outlined,
+                      color: ColorPalette.primary,
+                      size: 75,
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    '$drankToday / $dailyGoal ml drank',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ),
+                TextButton(
+                  onPressed: _updateTodayData,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Refresh'),
+                      Icon(Icons.refresh),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-            Text(
-              dayName,
-              style: TextStyle(
-                fontSize: 12, // Reduced font size if necessary
-                color: Colors.grey[600], // Change to desired text color
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+        // The BottomSheetClass Card
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          elevation: 4,
+          margin: EdgeInsets.all(10),
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: BottomSheetClass(),
+          ),
+        ),
+      ],
     );
   }
 }
-
 
 class BottomSheetClass extends StatefulWidget {
   const BottomSheetClass({super.key});
 
   @override
   _BottomSheetClassState createState() => _BottomSheetClassState();
-
 }
+
 class _BottomSheetClassState extends State<BottomSheetClass> {
-
-  String selectedDay = DateFormat('EEEE').format(DateTime.now());
-
-  Future<Map<String, dynamic>> fetchLast7DaysData() async {
-    final userUID = AuthenticationHelper().uid; // Replace with actual user UID.
-    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userUID).get();
-    return userDoc.data()!['waterDrank'] ?? {};
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -187,76 +159,7 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
           showModalBottomSheet<void>(
             context: context,
             builder: (BuildContext context) {
-              return Container(
-                height: 600,
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 10),
-                    Container(
-                      height: 60,
-                      child: Center(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-                            child: IntrinsicWidth(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center, // Center the children
-                                children: List<Widget>.generate(7, (index) {
-                                  final date = DateTime.now().subtract(Duration(days: index));
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: DateDisplay(
-                                      date: date,
-                                      onTap: () {
-                                        setState(() {
-                                          selectedDay = DateFormat('EEEE').format(date);
-                                        });
-                                      },
-                                    ),
-                                  );
-                                }),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(height: 10),
-
-                    // Remove Positioned and directly place FutureBuilder
-                    Expanded(
-                      child: FutureBuilder<Map<String, dynamic>>(
-                        future: fetchLast7DaysData(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          }
-                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return Text('No data available');
-                          }
-                          final data = snapshot.data!;
-                          // Your logic here to display the fetched data
-                          return ListView.builder(
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              final dayData = data.entries.elementAt(index);
-                              return ListTile(
-                                title: Text(DateFormat('MM/dd').format(DateTime.parse(dayData.key))),
-                                subtitle: Text('${dayData.value} ml'),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return _BottomSheetContent();
             },
           );
         },
@@ -275,33 +178,183 @@ class _BottomSheetClassState extends State<BottomSheetClass> {
   }
 }
 
+class _BottomSheetContent extends StatefulWidget {
+  @override
+  __BottomSheetContentState createState() => __BottomSheetContentState();
+}
 
-//
-// Text('Amount of water this week',
-// style: TextStyle(fontSize: 28,color:Colors.blue),),
-// Icon(Icons.arrow_forward, color: Colors.blue,),
+class __BottomSheetContentState extends State<_BottomSheetContent> {
+  String selectedDay = DateFormat('MM-dd-yyyy').format(DateTime.now());
+  late Future<Map<String, int>> futureData;
 
+  @override
+  void initState() {
+    super.initState();
+    futureData = fetchLast7DaysData();
+  }
 
-Future<List<Map<String, dynamic>>> fetchLast7DaysData() async {
-  final userUID = 'YOUR_USER_UID'; // Replace with actual user UID if needed
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 600,
+      color: Colors.white,
+      child: Column(
+        children: [
+          SizedBox(height: 10),
+          Container(
+            height: 60,
+            child: Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List<Widget>.generate(7, (index) {
+                    final date = DateTime.now().subtract(Duration(days: index));
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DateDisplay(
+                        date: date,
+                        isSelected:
+                        selectedDay == DateFormat('MM-dd-yyyy').format(date),
+                        onTap: () {
+                          setState(() {
+                            selectedDay =
+                                DateFormat('MM-dd-yyyy').format(date);
+                          });
+                        },
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: FutureBuilder<Map<String, int>>(
+              future: futureData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No data available');
+                }
+                final data = snapshot.data!;
+                // Display data for the selected day
+                int waterDrank = data[selectedDay] ?? 0;
+                return Center(
+                  child: Text(
+                    'Water drank on ${DateFormat('MM/dd/yyyy').format(DateFormat('MM-dd-yyyy').parse(selectedDay))}: $waterDrank ml',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DateDisplay extends StatelessWidget {
+  final DateTime date;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  DateDisplay(
+      {Key? key,
+        required this.date,
+        required this.onTap,
+        required this.isSelected})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String dayNumber = DateFormat('d').format(date);
+    String dayName = DateFormat('E').format(date);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue[200] : Colors.blue[50],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              dayNumber,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Colors.blue,
+              ),
+            ),
+            Text(
+              dayName,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future<Map<String, int>> fetchLast7DaysData() async {
+  final userUID = AuthenticationHelper().uid; // Replace with actual user UID if needed
   final now = DateTime.now();
-  final List<Map<String, dynamic>> last7DaysData = [];
+  final Map<String, int> last7DaysData = {};
 
   for (int i = 0; i < 7; i++) {
     final date = now.subtract(Duration(days: i));
-    final formattedDate = "${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}";
+    final formattedDate = DateFormat('MM-dd-yyyy').format(date);
 
     final docSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(userUID)
         .collection('water-drank')
-        .doc(formattedDate) // Get the document based on the date format in Firestore
+        .doc(formattedDate)
         .get();
 
     if (docSnapshot.exists) {
-      last7DaysData.add(docSnapshot.data() as Map<String, dynamic>);
+      final data = docSnapshot.data()!;
+      final waterConsumption = data['water-consumption'] as Map<String, dynamic>;
+
+      List<int> timestamps =
+      waterConsumption.keys.map((e) => int.parse(e)).toList();
+      timestamps.sort();
+
+      List<int> waterLevels = timestamps
+          .map((ts) => waterConsumption[ts.toString()] as int)
+          .toList();
+
+      int totalWaterDrankMm = 0;
+      for (int j = 1; j < waterLevels.length; j++) {
+        int difference = waterLevels[j - 1] - waterLevels[j];
+        if (difference > 0) {
+          totalWaterDrankMm += difference;
+        }
+      }
+
+      int totalWaterDrankMl = convertMmToMl(totalWaterDrankMm);
+
+      last7DaysData[formattedDate] = totalWaterDrankMl;
     }
   }
 
   return last7DaysData;
+}
+
+int convertMmToMl(int mm) {
+  // Adjust the conversion factor based on your bottle's dimensions
+  double conversionFactor = 710 / 200; // Example: 710 ml capacity, 200 mm height
+  return (mm * conversionFactor).toInt();
 }
