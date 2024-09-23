@@ -80,7 +80,7 @@ class AuthenticationHelper {
       'username': username,
       'email': email,
       'deviceID': '',
-      'waterDrank': {},
+      'dateJoined':DateTime.now().millisecondsSinceEpoch / 1000,
     };
     await userDoc.set(userData);
   }

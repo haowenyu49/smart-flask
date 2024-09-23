@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartflask/DetailedUserPage.dart';
 import 'package:smartflask/components/card.dart';
@@ -92,11 +93,35 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontSize: 20),
                           ),
                           SizedBox(width: 10),
-                          Text(userData!["date-joined"].toString(),
-                              style: TextStyle(
+
+                          // Updated code starts here
+                          Builder(
+                            builder: (context) {
+                              DateTime dateJoined;
+
+                              if (userData!["dateJoined"] is Timestamp) {
+                                dateJoined = (userData!["dateJoined"] as Timestamp).toDate();
+                              } else if (userData!["dateJoined"] is String) {
+                                dateJoined = DateTime.parse(userData!["dateJoined"]);
+                              } else if (userData!["dateJoined"] is int) {
+                                dateJoined = DateTime.fromMillisecondsSinceEpoch(userData!["dateJoined"]);
+                              } else {
+                                dateJoined = DateTime.now(); // Or handle error appropriately
+                              }
+
+                              String formattedDate = DateFormat('MM/dd/yyyy').format(dateJoined);
+
+                              return Text(
+                                formattedDate,
+                                style: TextStyle(
                                   color: Colors.blue,
                                   fontSize: 18,
-                                  fontWeight: FontWeight.w500))
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              );
+                            },
+                          ),
+                          // Updated code ends here
                         ],
                       ),
                     ],

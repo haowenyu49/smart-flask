@@ -175,55 +175,7 @@ class _LoginFormState extends State<LoginForm> {
                 padding: EdgeInsets.zero, // Removes default padding
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Minimizes the tap target size
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildSocialButton(
-                  assetName: 'assets/icons/apple-logo.png',
-                  onTap: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    var result = await AuthenticationHelper().signInWithGoogle();
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    if (result == null) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Dashboard()),
-                              (Route<dynamic> route) => false);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result)));
-                    }
-                  },
-                ),
-                SizedBox(width: 16),
-                _buildSocialButton(
-                  assetName: 'assets/icons/google-logo.png',
-                  onTap: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    var result = await AuthenticationHelper().signInWithGoogle();
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    if (result == null) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Dashboard()),
-                              (Route<dynamic> route) => false);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result)));
-                    }
-                  },
-                ),
-              ],
-            ),
+            ), 
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
