@@ -20,6 +20,9 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
 
   final _deviceIdController = TextEditingController();
 
+  // Assumed total internal height of the bottle in millimeters
+  static const double maxBottleHeightMm = 250.0;
+
   @override
   void initState() {
     super.initState();
@@ -105,9 +108,19 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       if (deviceDoc.exists) {
         Map<String, dynamic> data = deviceDoc.data() as Map<String, dynamic>;
 
+        // Extract the distance from the cap to the water surface in millimeters
+        double distanceFromCapMm = (data['distanceFromCapMm'] ?? 0.0).toDouble();
+
+        // Calculate water level as a percentage
+        double calculatedWaterLevel =
+            (maxBottleHeightMm - distanceFromCapMm) / maxBottleHeightMm;
+
+        // Ensure waterLevel is between 0.0 and 1.0
+        calculatedWaterLevel = calculatedWaterLevel.clamp(0.0, 1.0);
+
         setState(() {
           batteryLevel = (data['batteryLevel'] ?? 0.0).toDouble();
-          waterLevel = (data['waterLevel'] ?? 0.0).toDouble();
+          waterLevel = calculatedWaterLevel;
         });
       } else {
         print('Device data not found.');
@@ -122,38 +135,51 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Device Settings'),
+          elevation: 2,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: devicePaired
-              ? RefreshIndicator(
-            onRefresh: _fetchDeviceData,
-            child: ListView(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: devicePaired
+                ? RefreshIndicator(
+              onRefresh: _fetchDeviceData,
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Device ID: $deviceId',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    SizedBox(height: 20),
+                    BatteryLevelWidget(batteryLevel: batteryLevel),
+                    SizedBox(height: 40),
+                    WaterBottleWidget(waterLevel: waterLevel),
+                  ],
+                ),
+              ),
+            )
+                : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Device ID: $deviceId'),
+                TextField(
+                  controller: _deviceIdController,
+                  decoration:
+                  InputDecoration(labelText: 'Enter Device ID'),
+                ),
                 SizedBox(height: 20),
-                BatteryLevelWidget(batteryLevel: batteryLevel),
-                SizedBox(height: 20),
-                WaterBottleWidget(waterLevel: waterLevel),
+                ElevatedButton(
+                  onPressed: isLoading ? null : pairDevice,
+                  child: isLoading
+                      ? CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                      : Text('Confirm Device ID'),
+                ),
               ],
             ),
-          )
-              : Column(
-            children: [
-              TextField(
-                controller: _deviceIdController,
-                decoration: InputDecoration(labelText: 'Enter Device ID'),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: isLoading ? null : pairDevice,
-                child: isLoading
-                    ? CircularProgressIndicator(
-                  color: Colors.white,
-                )
-                    : Text('Confirm Device ID'),
-              ),
-            ],
           ),
         ));
   }
@@ -166,23 +192,52 @@ class BatteryLevelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color batteryColor =
+    batteryLevel > 20 ? Colors.green : Colors.red; // Color based on level
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           'Battery Level',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        LinearProgressIndicator(
-          value: batteryLevel / 100.0,
-          backgroundColor: Colors.grey[300],
-          valueColor: AlwaysStoppedAnimation<Color>(
-            batteryLevel > 20 ? Colors.green : Colors.red,
-          ),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 60,
+              height: 120,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[700]!, width: 2),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: 56,
+                  height: 116 * (batteryLevel / 100.0).clamp(0.0, 1.0),
+                  color: batteryColor,
+                ),
+              ),
+            ),
+            Text(
+              '${batteryLevel.toStringAsFixed(0)}%',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    blurRadius: 2.0,
+                    color: Colors.black,
+                    offset: Offset(0.5, 0.5),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        SizedBox(height: 5),
-        Text('${batteryLevel.toStringAsFixed(0)}%'),
       ],
     );
   }
@@ -196,84 +251,40 @@ class WaterBottleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Water Level',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        CustomPaint(
-          size: Size(100, 200),
-          painter: WaterBottlePainter(waterLevel: waterLevel),
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            // The bottle image
+            Image.asset(
+              'assets/images/bottle.png',
+              width: 150,
+              height: 300,
+              fit: BoxFit.contain,
+            ),
+            // The water level overlay
+            ClipRect(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                heightFactor:
+                waterLevel.clamp(0.0, 1.0), // Adjust this to change the water level
+                child: Container(
+                  width: 150,
+                  height: 300,
+                  color: Colors.blue.withOpacity(0.6),
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 5),
         Text('${(waterLevel * 100).toStringAsFixed(0)}% full'),
       ],
     );
-  }
-}
-
-class WaterBottlePainter extends CustomPainter {
-  final double waterLevel; // Expected to be between 0.0 and 1.0
-
-  WaterBottlePainter({required this.waterLevel});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Draw the bottle outline
-    Paint bottlePaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    Path bottlePath = Path();
-    double bottleWidth = size.width * 0.6;
-    double bottleNeckHeight = size.height * 0.2;
-    double bottleBodyHeight = size.height * 0.7;
-    double bottleNeckWidth = bottleWidth * 0.5;
-
-    double left = (size.width - bottleWidth) / 2;
-    double right = left + bottleWidth;
-    double top = 0;
-    double bottom = size.height;
-
-    // Neck
-    bottlePath.moveTo(left + (bottleWidth - bottleNeckWidth) / 2, top);
-    bottlePath.lineTo(
-        left + (bottleWidth - bottleNeckWidth) / 2, top + bottleNeckHeight);
-    bottlePath.lineTo(
-        right - (bottleWidth - bottleNeckWidth) / 2, top + bottleNeckHeight);
-    bottlePath.lineTo(
-        right - (bottleWidth - bottleNeckWidth) / 2, top);
-
-    // Body
-    bottlePath.moveTo(left, top + bottleNeckHeight);
-    bottlePath.lineTo(left, bottom);
-    bottlePath.lineTo(right, bottom);
-    bottlePath.lineTo(right, top + bottleNeckHeight);
-
-    canvas.drawPath(bottlePath, bottlePaint);
-
-    // Fill the bottle with water
-    Paint waterPaint = Paint()
-      ..color = Colors.blue.withOpacity(0.6)
-      ..style = PaintingStyle.fill;
-
-    double waterTop = bottom - (bottleBodyHeight * waterLevel);
-
-    Path waterPath = Path();
-    waterPath.moveTo(left, bottom);
-    waterPath.lineTo(left, waterTop);
-    waterPath.lineTo(right, waterTop);
-    waterPath.lineTo(right, bottom);
-    waterPath.close();
-
-    canvas.drawPath(waterPath, waterPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant WaterBottlePainter oldDelegate) {
-    return oldDelegate.waterLevel != waterLevel;
   }
 }

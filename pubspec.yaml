@@ -88,6 +88,7 @@ flutter:
     - assets/images/keto.png
     - assets/images/AHC.png
     - assets/images/Salmon Tomato Salad.png
+    - assets/images/bottle.png
     - assets/.env
   fonts:
     - family: Raleway
