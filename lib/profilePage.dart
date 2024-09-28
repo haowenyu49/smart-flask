@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartflask/DetailedUserPage.dart';
 import 'package:smartflask/components/card.dart';
 import 'package:smartflask/components/firebase/authentication.dart';
+import 'package:smartflask/deviceSettingsPage.dart';
 import 'package:smartflask/goalsPage.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -184,7 +185,19 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  Text(
+                    'Bottle',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  CustomCard(icon: Icons.developer_board,
+                      title: "Device Settings",
+                      subTitle: "Set or Change Bottle Settings",
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => DeviceSettingsPage()));
+                      }
+                      )
                 ],
               ),
             ),
