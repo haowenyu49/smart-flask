@@ -42,45 +42,72 @@ class _HomePageState extends State<HomePage> {
     final date = DateTime.now();
     final formattedDate = DateFormat('MM-dd-yyyy').format(date);
 
-    final docSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userUID)
-        .collection('water-drank')
-        .doc(formattedDate)
-        .get();
+    try {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userUID)
+          .collection('water-drank')
+          .doc(formattedDate)
+          .get();
 
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data()!;
-      final waterConsumption = data['water-consumption'] as Map<String, dynamic>;
+      if (docSnapshot.exists && docSnapshot.data()!.containsKey('water-consumption')) {
+        final data = docSnapshot.data()!;
+        final waterConsumption = data['water-consumption'] as Map<String, dynamic>;
 
-      List<int> timestamps =
-      waterConsumption.keys.map((e) => int.parse(e)).toList();
-      timestamps.sort();
+        // Parse the timestamps (as keys) and sort them
+        List<int> timestamps = waterConsumption.keys.map((e) => int.tryParse(e) ?? 0).toList();
+        timestamps.sort();
 
-      List<int> waterLevels = timestamps
-          .map((ts) => waterConsumption[ts.toString()] as int)
-          .toList();
+        // Map timestamps to water levels
+        List<int> waterLevels = timestamps.map((ts) => waterConsumption[ts.toString()] as int).toList();
 
-      int totalWaterDrankMm = 0;
-      for (int i = 1; i < waterLevels.length; i++) {
-        int difference = waterLevels[i - 1] - waterLevels[i];
-        if (difference > 0) {
-          totalWaterDrankMm += difference;
+        // Debugging print for today's water levels
+        print("Water Levels for today: $waterLevels");
+
+        // Calculate total millimeters difference in water levels, ignoring refills
+        int totalWaterDrankMm = 0;
+        for (int i = 1; i < waterLevels.length; i++) {
+          int currentLevel = waterLevels[i];
+          int previousLevel = waterLevels[i - 1];
+
+          // If the current level is lower than the previous one, we count it as consumption
+          if (currentLevel < previousLevel) {
+            int difference = previousLevel - currentLevel;
+            totalWaterDrankMm += difference;
+
+            // Debugging print for each consumption difference
+            print("Consumed water between $i and $i-1: $difference mm");
+          }
+          // If the current level is higher than the previous, it's likely a refill, so we skip it
+          else if (currentLevel > previousLevel) {
+            print("Bottle refilled between $i and $i-1. Ignoring this increase.");
+          }
         }
-      }
 
-      int totalWaterDrankMl = convertMmToMl(totalWaterDrankMm);
-      return totalWaterDrankMl;
-    } else {
+        // Convert total water drank from mm to ml
+        int totalWaterDrankMl = convertMmToMl(totalWaterDrankMm);
+
+        // Debugging print for total water drank in ml
+        print("Total Water Drank today (ml): $totalWaterDrankMl");
+
+        return totalWaterDrankMl;
+      } else {
+        print("Document or 'water-consumption' field does not exist");
+        return 0;
+      }
+    } catch (e) {
+      print("Error fetching data from Firestore: $e");
       return 0;
     }
   }
 
   int convertMmToMl(int mm) {
-    // Adjust the conversion factor based on your bottle's dimensions
-    double conversionFactor = 710 / 200; // Example: 710 ml capacity, 200 mm height
+    // 21 oz bottle -> 621.04 ml and 226 mm height
+    double conversionFactor = 621.04 / 226; // 2.748 ml per mm
     return (mm * conversionFactor).toInt();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -209,17 +236,15 @@ class __BottomSheetContentState extends State<_BottomSheetContent> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List<Widget>.generate(7, (index) {
-                    final date = DateTime.now().subtract(Duration(days: index));
+                    final date = DateTime.now().subtract(Duration(days: 6 - index));
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: DateDisplay(
                         date: date,
-                        isSelected:
-                        selectedDay == DateFormat('MM-dd-yyyy').format(date),
+                        isSelected: selectedDay == DateFormat('MM-dd-yyyy').format(date),
                         onTap: () {
                           setState(() {
-                            selectedDay =
-                                DateFormat('MM-dd-yyyy').format(date);
+                            selectedDay = DateFormat('MM-dd-yyyy').format(date);
                           });
                         },
                       ),
@@ -317,36 +342,61 @@ Future<Map<String, int>> fetchLast7DaysData() async {
     final date = now.subtract(Duration(days: i));
     final formattedDate = DateFormat('MM-dd-yyyy').format(date);
 
-    final docSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userUID)
-        .collection('water-drank')
-        .doc(formattedDate)
-        .get();
+    try {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userUID)
+          .collection('water-drank')
+          .doc(formattedDate)
+          .get();
 
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data()!;
-      final waterConsumption = data['water-consumption'] as Map<String, dynamic>;
+      if (docSnapshot.exists && docSnapshot.data()!.containsKey('water-consumption')) {
+        final data = docSnapshot.data()!;
+        final waterConsumption = data['water-consumption'] as Map<String, dynamic>;
 
-      List<int> timestamps =
-      waterConsumption.keys.map((e) => int.parse(e)).toList();
-      timestamps.sort();
+        // Parse the timestamps (as keys) and sort them
+        List<int> timestamps = waterConsumption.keys.map((e) => int.tryParse(e) ?? 0).toList();
+        timestamps.sort();
 
-      List<int> waterLevels = timestamps
-          .map((ts) => waterConsumption[ts.toString()] as int)
-          .toList();
+        // Map timestamps to water levels
+        List<int> waterLevels = timestamps.map((ts) => waterConsumption[ts.toString()] as int).toList();
 
-      int totalWaterDrankMm = 0;
-      for (int j = 1; j < waterLevels.length; j++) {
-        int difference = waterLevels[j - 1] - waterLevels[j];
-        if (difference > 0) {
-          totalWaterDrankMm += difference;
+        // Debugging print for each day's water levels
+        print("Water Levels for $formattedDate: $waterLevels");
+
+        // Calculate total millimeters difference in water levels for the day
+        int totalWaterDrankMm = 0;
+        for (int j = 1; j < waterLevels.length; j++) {
+          int currentLevel = waterLevels[j];
+          int previousLevel = waterLevels[j - 1];
+
+          // If the current level is lower than the previous one, we count it as consumption
+          if (currentLevel < previousLevel) {
+            int difference = previousLevel - currentLevel;
+            totalWaterDrankMm += difference;
+
+            // Debugging print for each consumption difference
+            print("Consumed water between $j and $j-1 on $formattedDate: $difference mm");
+          }
+          // If the current level is higher than the previous, it's likely a refill, so we skip it
+          else if (currentLevel > previousLevel) {
+            print("Bottle refilled between $j and $j-1 on $formattedDate. Ignoring this increase.");
+          }
         }
+
+        // Convert total water drank from mm to ml
+        int totalWaterDrankMl = convertMmToMl(totalWaterDrankMm);
+
+        // Debugging print for total water drank in ml
+        print("Total Water Drank on $formattedDate (ml): $totalWaterDrankMl");
+
+        // Store the result for this day
+        last7DaysData[formattedDate] = totalWaterDrankMl;
+      } else {
+        print("No data available for $formattedDate.");
       }
-
-      int totalWaterDrankMl = convertMmToMl(totalWaterDrankMm);
-
-      last7DaysData[formattedDate] = totalWaterDrankMl;
+    } catch (e) {
+      print("Error fetching data for $formattedDate: $e");
     }
   }
 
@@ -354,7 +404,7 @@ Future<Map<String, int>> fetchLast7DaysData() async {
 }
 
 int convertMmToMl(int mm) {
-  // Adjust the conversion factor based on your bottle's dimensions
-  double conversionFactor = 710 / 200; // Example: 710 ml capacity, 200 mm height
+  // 21 oz bottle -> 621.04 ml and 226 mm height
+  double conversionFactor = 621.04 / 226; // 2.748 ml per mm
   return (mm * conversionFactor).toInt();
 }
