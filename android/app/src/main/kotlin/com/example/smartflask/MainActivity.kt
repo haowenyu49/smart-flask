@@ -1,4 +1,4 @@
-package com.example.smartflask
+package com.codingmind.smartflask
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -18,7 +18,8 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text('Smart Flask',
+                Text(
+                  'Smart Flask',
                   style: TextStyle(fontSize: 30),
                 ),
                 SizedBox(height: 40),
@@ -106,9 +107,9 @@ class _LoginFormState extends State<LoginForm> {
                       _obscureText = !_obscureText;
                     });
                   },
-                  child: Icon(_obscureText
-                      ? Icons.visibility_off
-                      : Icons.visibility),
+                  child: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                  ),
                 ),
               ),
               obscureText: _obscureText,
@@ -121,8 +122,8 @@ class _LoginFormState extends State<LoginForm> {
               height: 60,
               child: FilledButton(
                 style: ButtonStyle(
-                  backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.blue),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.blue),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
@@ -144,7 +145,9 @@ class _LoginFormState extends State<LoginForm> {
                     if (result == null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const Dashboard()),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const Dashboard()),
                               (Route<dynamic> route) => false);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -157,7 +160,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
+                _showForgotPasswordDialog(context); // Call the pop-up for password reset
               },
               child: Text(
                 'Forgot Password?',
@@ -175,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
                 padding: EdgeInsets.zero, // Removes default padding
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Minimizes the tap target size
               ),
-            ), 
+            ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +192,8 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                      MaterialPageRoute(
+                          builder: (context) => RegisterPage()),
                     );
                   },
                   child: Text(
@@ -217,13 +221,49 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Widget _buildSocialButton({required String assetName, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Image.asset(
-        assetName,
-        width: 48,
-        height: 48,
+  // Function to show a dialog for "Forgot Password"
+  void _showForgotPasswordDialog(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Reset Password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Enter your email to reset your password.'),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              String email = emailController.text.trim();
+              if (email.isNotEmpty) {
+                var result = await AuthenticationHelper().resetPassword(email);
+                Navigator.of(context).pop(); // Close the dialog
+                if (result == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Reset link sent to $email')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(result)),
+                  );
+                }
+              }
+            },
+            child: Text('Send'),
+          ),
+        ],
       ),
     );
   }

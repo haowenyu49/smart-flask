@@ -21,7 +21,14 @@ class AuthenticationHelper {
       return e.message;
     }
   }
-
+  Future<String?> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return null; // Null means success
+    } catch (e) {
+      return e.toString(); // Return error message in case of failure
+    }
+  }
   String getUID() {
     return user.uid;
   }
@@ -104,6 +111,25 @@ class AuthenticationHelper {
     } else {
       print('No data found for date $date'); // Debug print
       return [];
+    }
+  }
+  Future<void> deleteAccount(String password) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        // Reauthenticate user
+        AuthCredential credential = EmailAuthProvider.credential(email: user.email!, password: password);
+        await user.reauthenticateWithCredential(credential);
+
+        // Delete user data from Firestore
+        await _firestore.collection('users').doc(user.uid).delete();
+
+        // Delete user authentication account
+        await user.delete();
+        await _clearLoginState();
+      }
+    } catch (e) {
+      print('Error deleting account: $e');
     }
   }
 
