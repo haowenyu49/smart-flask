@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
           .collection('water-drank')
           .doc(formattedDate)
           .get();
-
+      print(formattedDate);
       if (docSnapshot.exists && docSnapshot.data()!.containsKey('water-consumption')) {
         final data = docSnapshot.data()!;
         final waterConsumption = data['water-consumption'] as Map<String, dynamic>;

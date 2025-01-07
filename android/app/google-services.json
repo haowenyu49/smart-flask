@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "493114577117-7olbvc8nh2644ivaros6ggojhot5a811.apps.googleusercontent.com",
+              "client_id": "493114577117-1gqhr7t8ss2opjoocdoqi414amngpba1.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.smartflask"
+                "bundle_id": "com.codingminds.smartflask"
               }
             }
           ]
